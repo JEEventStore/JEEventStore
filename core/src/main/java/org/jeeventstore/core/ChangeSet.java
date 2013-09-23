@@ -9,7 +9,8 @@ import java.util.UUID;
  * unit within the given event stream. The events within a ChangeSet are
  * stored in an atomic operation: The events in a ChangeSet can either be
  * applied to the event stream as a whole, or none of the events are applied.
- * @author alex
+ * 
+ * @author Alexander Langer
  */
 public interface ChangeSet extends Serializable {
 
