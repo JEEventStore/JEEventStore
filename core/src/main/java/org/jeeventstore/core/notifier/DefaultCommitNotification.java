@@ -36,6 +36,9 @@ class DefaultCommitNotification implements EventStoreCommitNotification {
         this.changes = changes;
     }
 
+    /**
+     * @see EventStoreCommitNotification#changes() 
+     */
     @Override
     public ChangeSet changes() {
         return this.changes;
