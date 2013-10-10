@@ -33,6 +33,11 @@ public interface EventStoreCommitNotifier {
 
     /**
      * Notify all registered listeners about the committed ChangeSet.
+     * Non-delivered notifications are not persisted during application
+     * restarts to avoid expensive 2-phase-commits.  If the server crashes or
+     * stops while the notification is in progress, clients are expected to 
+     * recover manually on the next server startup (e.g., by replaying the full
+     * event store on application startup).
      * @param changeSet The change set that has been committed.
      * Method must be thread-safe.
      */
