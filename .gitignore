@@ -1,10 +1,9 @@
 *.class
-nbactions.xml
-
 # Package Files #
 *.jar
 *.war
 *.ear
+nbactions.xml
 /core/target/
 /persistence-jpa/target/
 /serial-gson/target/
