@@ -71,7 +71,10 @@ public class AsyncEventStoreCommitNotifier
          * timer storage), and we actually do not need them by the semantics
          * of notifyListeners()
          */
-        timerService.createSingleActionTimer(0, new TimerConfig(changeSet, false));
+        TimerConfig config = new TimerConfig(changeSet, false);
+        // create an interval timer that is cancelled once the notifications
+        // suceeded
+        timerService.createIntervalTimer(0, 500, config);
     }
     
     /**
@@ -84,6 +87,7 @@ public class AsyncEventStoreCommitNotifier
     public void notifyAppendListeners(Timer timer) {
         ChangeSet changeSet = (ChangeSet) timer.getInfo();
         this.performNotification(changeSet);
+        timer.cancel();
     }
     
 }
