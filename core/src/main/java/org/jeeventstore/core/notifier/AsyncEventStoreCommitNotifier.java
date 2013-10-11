@@ -21,6 +21,8 @@
 
 package org.jeeventstore.core.notifier;
 
+import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
@@ -32,6 +34,10 @@ import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
 import org.jeeventstore.core.ChangeSet;
 
 /**
@@ -56,8 +62,26 @@ public class AsyncEventStoreCommitNotifier
         extends AbstractEventStoreCommitNotifier 
         implements EventStoreCommitNotifier {
 
+    private Logger log = Logger.getLogger(AsyncEventStoreCommitNotifier.class.getName());
+
     @Resource
     private TimerService timerService;
+
+    private long retryInterval = 100;
+
+    @PostConstruct
+    public void init() {
+        try {
+            InitialContext ic = new InitialContext();
+            Long tmpRetry = (Long) ic.lookup("java:comp/env/retryInterval");
+            if (tmpRetry != null)
+                retryInterval = tmpRetry;
+        } catch (NameNotFoundException e) {
+            log.info("Error looking up retryInterval variable, falling back to default of " + retryInterval + "ms");
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     @Lock(LockType.READ)
@@ -74,7 +98,7 @@ public class AsyncEventStoreCommitNotifier
         TimerConfig config = new TimerConfig(changeSet, false);
         // create an interval timer that is cancelled once the notifications
         // suceeded
-        timerService.createIntervalTimer(0, 500, config);
+        timerService.createIntervalTimer(0, retryInterval, config);
     }
     
     /**
