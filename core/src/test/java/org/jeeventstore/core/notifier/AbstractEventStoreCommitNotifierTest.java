@@ -5,6 +5,7 @@ import org.jboss.arquillian.testng.Arquillian;
 import org.jeeventstore.core.ChangeSet;
 import org.jeeventstore.core.store.TestChangeSet;
 import static org.testng.Assert.*;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 
 /**
@@ -23,8 +24,14 @@ public abstract class AbstractEventStoreCommitNotifierTest
         return new TestChangeSet(id);
     }
 
-    private boolean caught = false;
-    private ChangeSet caughtCS = null;
+    // these must be static to have them set from different threads
+    protected static boolean caught = false;
+    protected static ChangeSet caughtCS = null;
+
+    @AfterTest
+    public void cleanup() {
+        this.clear();
+    }
 
     @Override
     public void receive(EventStoreCommitNotification notification) {
@@ -32,7 +39,7 @@ public abstract class AbstractEventStoreCommitNotifierTest
         caughtCS = notification.changes();
     }
 
-    private void clear() {
+    protected void clear() {
         sleep(WAIT_TIME);
         caught = false;
         caughtCS = null;
