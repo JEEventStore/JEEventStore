@@ -37,9 +37,6 @@ public abstract class AbstractEventStoreCommitNotifier
     
     private List<EventStoreCommitListener> listeners = new ArrayList<>();
 
-    /**
-     * @see EventStoreCommitNotifier#addListener(org.jeeventstore.core.notifier.EventStoreCommitListener) 
-     */
     @Override
     @Lock(LockType.WRITE)
     public void addListener(EventStoreCommitListener listener) {
@@ -48,9 +45,6 @@ public abstract class AbstractEventStoreCommitNotifier
         this.listeners.add(listener);
     }
 
-    /**
-     * @see EventStoreCommitNotifier#removeListener(org.jeeventstore.core.notifier.EventStoreCommitListener) 
-     */
     @Override
     @Lock(LockType.WRITE)
     public void removeListener(EventStoreCommitListener listener) {
