@@ -32,8 +32,8 @@ public interface EventStoreCommitListener {
     /**
      * Receive a notification that a change set has been committed to the
      * event store.
-     * @param notification The actual notification.
      * This method must be thread-safe.
+     * @param notification The actual notification.
      */
     void receive(EventStoreCommitNotification notification);
     
