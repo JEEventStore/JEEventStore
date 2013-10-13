@@ -29,8 +29,14 @@ import org.jeeventstore.core.ChangeSet;
 
 /**
  * A synchronous event store commit notifier.
- * Notifies interested listeners in the same thread that also commits
- * the changes to the event store. The notification order is currently
+ * Notifies interested listeners in the same thread and transaction that also
+ * commits the changes to the event store.  Note that therefore listeners may 
+ * cause a rollback of the committing transaction.  This might be desired
+ * in some circumstances, but if you want to de-couple the committing to
+ * the event store from the notification, use the
+ * {@link AsyncEventStoreCommitNotifier} instead.
+ * 
+ * The notification order is currently
  * in the order of registration, but this is not a guarantee and might change
  * in the future.
  * 
@@ -41,9 +47,6 @@ public class SyncEventStoreCommitNotifier
         extends AbstractEventStoreCommitNotifier 
         implements EventStoreCommitNotifier {
 
-    /**
-     * @see EventStoreCommitNotifier#notifyListeners(org.jeeventstore.core.ChangeSet) 
-     */
     @Override
     @Lock(LockType.READ)
     public void notifyListeners(ChangeSet changeSet) {
