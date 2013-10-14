@@ -23,15 +23,14 @@ package org.jeeventstore.core;
 
 import java.io.Serializable;
 import java.util.UUID;
-import org.jeeventstore.core.persistence.EventStorePersistence;
-import org.jeeventstore.core.store.ConcurrencyException;
-import org.jeeventstore.core.store.DuplicateCommitException;
 
 /**
  * A writable event stream is an event stream to which new events
  * can be appended and which can commit the changes to the event store.
- * This can be used to append events to an event stream without an extra
- * database round trip required for loading the events from the event store.
+ * Since the existing events in an event stream are not exposed to a client
+ * of a writable event stream, a writable event stream can quickly be created
+ * without querying the database for the existing events, which improves
+ * performance when events are to be appended to the event stream.
  * 
  * @author Alexander Langer
  */
@@ -46,6 +45,8 @@ public interface WritableEventStream extends VersionedEventStream {
     /**
      * Commits the changes to durable storage.
      * @param commitId The value which uniquely identifies the commit.
+     * @throws DuplicateCommitException
+     * @throws ConcurrencyException
      */
     void commit(UUID commitId) 
             throws DuplicateCommitException, ConcurrencyException;
