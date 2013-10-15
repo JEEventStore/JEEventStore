@@ -22,7 +22,7 @@
 package org.jeeventstore.core;
 
 /**
- * An event stream that can be accessed both for reading and for writing.
+ * An event stream that can be accessed for both, reading and for writing.
  * @author Alexander Langer
  */
 public interface ReadWriteEventStream
