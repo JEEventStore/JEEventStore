@@ -26,9 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A readable event stream is an event stream whose stored events
- * can be accessed.  Usually used to access the events in an event
- * stream that has been loaded from the event store.
+ * A readable event stream is an event stream whose events can be accessed.
  * 
  * @author Alexander Langer
  */
