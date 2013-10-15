@@ -39,7 +39,6 @@ public interface EventStoreCommitNotifier {
      * recover manually on the next server startup (e.g., by replaying the full
      * event store on application startup).
      * @param changeSet The change set that has been committed.
-     * Method must be thread-safe.
      */
     void notifyListeners(ChangeSet changeSet);
 
@@ -48,7 +47,6 @@ public interface EventStoreCommitNotifier {
      * The listener must not be registered already, otherwise an exception
      * is thrown.
      * @param listener The listener that shall be added.
-     * Method must be thread-safe.
      */
     void addListener(EventStoreCommitListener listener);
 
@@ -56,7 +54,6 @@ public interface EventStoreCommitNotifier {
      * Remove a registered listener.
      * The listener must be registered, otherwise an exception is thrown.
      * @param listener The listener that shall be removed.
-     * Method must be thread-safe.
      */
     void removeListener(EventStoreCommitListener listener);
     
