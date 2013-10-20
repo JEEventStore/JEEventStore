@@ -47,7 +47,7 @@ class DefaultChangeSet implements ChangeSet {
             String streamId,
             long streamVersion,
             UUID changeSetId,
-            List<Serializable> events) {
+            List<? extends Serializable> events) {
         this.bucketId = bucketId;
         this.streamId = streamId;
         this.streamVersion = streamVersion;
