@@ -25,7 +25,7 @@ public class NotifyingPersistenceDecoratorTest implements EventStorePersistence 
     private Iterator<ChangeSet> changeSetIterator;
     private ChangeSet persistedChangeset;
     
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void clear() {
         received = false;
         existsStreamCalled = false;
