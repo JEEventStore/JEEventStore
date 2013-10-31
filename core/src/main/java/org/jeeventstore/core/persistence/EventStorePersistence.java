@@ -58,8 +58,8 @@ public interface EventStorePersistence {
     Iterator<ChangeSet> allChanges();
 
     /**
-     * Get all {@link ChangeSet}s between {@code minVersion} and
-     * {@code maxVersion} (both inclusive) in the specified event stream.
+     * Get all {@link ChangeSet}s between {@code minVersion} (exclusive) and
+     * {@code maxVersion} (inclusive) in the specified event stream.
      * The order of the respective {@link ChangeSet#streamVersion()} is guaranteed
      * to be strictly increasing.
      * 
@@ -68,8 +68,8 @@ public interface EventStorePersistence {
      * the call to {@code getFrom()} (if transactions are used).
      * 
      * @param bucketId The identifier of the bucket to which the stream belongs.
-     * @param streamId The identifier of the stream that is tested for existence.
-     * @param minVersion The minimum version (inclusive) of the {@link ChangeSet} to fetch.
+     * @param streamId The identifier of the stream that is to be retrieved from.
+     * @param minVersion The minimum version (exclusive) of the {@link ChangeSet} to fetch.
      * @param maxVersion The maximum version (inclusive) of the {@link ChangeSet} to fetch.
      *      The version of the last {@link ChangeSet} fetched is typically smaller.
      * @return An iterator to the {@link ChangeSet}s in the stream in order of their version.
