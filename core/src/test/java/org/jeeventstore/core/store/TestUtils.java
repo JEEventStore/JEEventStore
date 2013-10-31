@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import org.jeeventstore.core.ChangeSet;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import org.testng.collections.Lists;
 
 /**
  *
@@ -34,4 +36,23 @@ public class TestUtils {
         }
         assertTrue(!has.hasNext());
     } 
+
+    public static List<ChangeSet> createChangeSets(String bId, String sId, int minversion, int maxversion) {
+        List<ChangeSet> list = new ArrayList<>();
+        for (int i = minversion; i <= maxversion; i++) {
+            List<Integer> data = TestUtils.randomdata(i % (maxversion - minversion + 5));
+            ChangeSet cs = new DefaultChangeSet(bId, sId, i, UUID.randomUUID(), data);
+            list.add(cs);
+        }
+        return list;
+    }
+
+    // we do not use IteratorUtils to avoid a dependency
+    public static <T> List<T> toList(Iterator<T> it) {
+        List<T> list = new ArrayList<>();
+        while (it.hasNext())
+            list.add(it.next());
+        return list;
+    }
+
 }
