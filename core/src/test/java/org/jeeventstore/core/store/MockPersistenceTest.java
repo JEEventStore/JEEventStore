@@ -20,7 +20,7 @@ public class MockPersistenceTest {
 
     @BeforeMethod
     public void init() {
-        this.persistence = new MockPersistence();
+        this.persistence = new MockPersistence("", "");
         List<ChangeSet> data = TestUtils.createChangeSets("", "", 1, 100);
         try {
             for (ChangeSet cs : data)

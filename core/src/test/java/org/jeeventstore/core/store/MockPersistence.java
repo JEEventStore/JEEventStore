@@ -13,7 +13,14 @@ import org.jeeventstore.core.persistence.EventStorePersistence;
  */
 public class MockPersistence implements EventStorePersistence {
 
-    private List<ChangeSet> changeSets = new ArrayList<>();
+    private final String bucketId;
+    private final String streamId;
+    private final List<ChangeSet> changeSets = new ArrayList<>();
+
+    public MockPersistence(String bucketId, String streamId) {
+        this.bucketId = bucketId;
+        this.streamId = streamId;
+    }
 
     @Override
     public boolean existsStream(String bucketId, String streamId) {
@@ -27,6 +34,8 @@ public class MockPersistence implements EventStorePersistence {
 
     @Override
     public Iterator<ChangeSet> getFrom(String bucketId, String streamId, long minVersion, long maxVersion) {
+        if (!this.bucketId.equals(bucketId) || !this.streamId.equals(streamId))
+            return new ArrayList<ChangeSet>().iterator();
         int max = Math.min(changeSets.size(), (int) maxVersion);
         int min = Math.min(changeSets.size(), (int) minVersion);
         return changeSets.subList(min, max).iterator();
