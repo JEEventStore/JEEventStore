@@ -20,7 +20,7 @@ public class MockPersistenceTest {
 
     @BeforeMethod
     public void init() {
-        this.persistence = new MockPersistence("", "");
+        this.persistence = new MockPersistence();
         List<ChangeSet> data = TestUtils.createChangeSets("", "", 1, 100);
         try {
             for (ChangeSet cs : data)
@@ -28,6 +28,15 @@ public class MockPersistenceTest {
         } catch (ConcurrencyException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    public void test_reset() throws Exception {
+        Iterator<ChangeSet> it = persistence.allChanges();
+        assertTrue(it.hasNext());
+        persistence.persistChanges(MockPersistence.resetCommand());
+        it = persistence.allChanges();
+        assertTrue(!it.hasNext());
     }
 
     @Test
