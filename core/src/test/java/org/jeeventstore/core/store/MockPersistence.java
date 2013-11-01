@@ -13,18 +13,14 @@ import org.jeeventstore.core.persistence.EventStorePersistence;
  */
 public class MockPersistence implements EventStorePersistence {
 
-    private final String bucketId;
-    private final String streamId;
+    private static final String RESET = "RESET";
     private final List<ChangeSet> changeSets = new ArrayList<>();
 
-    public MockPersistence(String bucketId, String streamId) {
-        this.bucketId = bucketId;
-        this.streamId = streamId;
-    }
+    public MockPersistence() { }
 
     @Override
     public boolean existsStream(String bucketId, String streamId) {
-        return true;
+        return !changeSets.isEmpty();
     }
 
     @Override
@@ -34,8 +30,8 @@ public class MockPersistence implements EventStorePersistence {
 
     @Override
     public Iterator<ChangeSet> getFrom(String bucketId, String streamId, long minVersion, long maxVersion) {
-        if (!this.bucketId.equals(bucketId) || !this.streamId.equals(streamId))
-            return new ArrayList<ChangeSet>().iterator();
+        if (maxVersion == Long.MAX_VALUE)
+            maxVersion = Integer.MAX_VALUE;
         int max = Math.min(changeSets.size(), (int) maxVersion);
         int min = Math.min(changeSets.size(), (int) minVersion);
         return changeSets.subList(min, max).iterator();
@@ -43,6 +39,10 @@ public class MockPersistence implements EventStorePersistence {
 
     @Override
     public void persistChanges(ChangeSet changeSet) throws ConcurrencyException {
+        if (RESET.equals(changeSet.bucketId()) {
+            this.cleanup();
+            return;
+        }
         // version 0 -> changeset.size() == 0, i.e. wrong if size > 0 
         // version 1 -> size == 1
         // etc
@@ -52,6 +52,14 @@ public class MockPersistence implements EventStorePersistence {
         changeSets.add(changeSet);
         if (changeSets.size() != changeSet.streamVersion())
             throw new ConcurrencyException();
+    }
+
+    private void cleanup() {
+        changeSets.clear();
+    }
+
+    public static ChangeSet resetCommand() {
+        return new TestChangeSet(RESET);
     }
     
 }
