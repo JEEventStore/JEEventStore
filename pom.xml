@@ -13,7 +13,7 @@
     <modules>
         <module>core</module>
         <!--module>persistence-jpa</module-->
-        <!--module>serial-gson</module-->
+        <module>serial-gson</module>
     </modules>
 
     <properties>
@@ -35,6 +35,13 @@
             <dependency>
                 <groupId>org.jeeventstore</groupId>
                 <artifactId>jeeventstore-core</artifactId>
+                <version>${project.version}</version>
+                <type>ejb</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jeeventstore</groupId>
+                <artifactId>jeeventstore-serialization-gson</artifactId>
                 <version>${project.version}</version>
                 <type>ejb</type>
             </dependency>
@@ -137,7 +144,7 @@
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <skip>true</skip>
+                            <skipTests>true</skipTests>
                         </configuration>
                     </plugin>
                 </plugins>
