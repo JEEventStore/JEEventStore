@@ -31,7 +31,7 @@ public class OptimisticEventStreamTest {
 
     @BeforeMethod(alwaysRun = true)
     public void init() {
-        this.persistence = new MockPersistence(BUCKET_ID, STREAM_ID);
+        this.persistence = new MockPersistence();
         data = TestUtils.createChangeSets(BUCKET_ID, STREAM_ID, 1, NUM_CHANGESETS);
         try {
             for (ChangeSet cs : data)
@@ -69,7 +69,8 @@ public class OptimisticEventStreamTest {
     }
 
     @Test
-    public void test_readable_nonexistent() {
+    public void test_readable_nonexistent() throws Exception {
+        persistence.persistChanges(MockPersistence.resetCommand());
         try {
             ReadableEventStream oes = OptimisticEventStream.createReadable("wrong", "stream", 28l, persistence);
             fail("Should have failed by now");
