@@ -59,7 +59,6 @@ public class NotifyingPersistenceDecoratorTest implements EventStorePersistence 
 
     @Test
     public void test_persistChanges() {
-        // hier auch auf notification testen
         NotifyingPersistenceDecorator decorator = new NotifyingPersistenceDecorator(
                 this, new TestNotifier());
         assertNull(this.persistedChangeset);
@@ -71,10 +70,22 @@ public class NotifyingPersistenceDecoratorTest implements EventStorePersistence 
         assertTrue(this.received);
         assertEquals(this.persistedChangeset, cs);
     }
+
+    @Test
+    public void test_no_notification_on_exception() {
+        NotifyingPersistenceDecorator decorator = new NotifyingPersistenceDecorator(
+                this, new TestNotifier());
+        assertNull(this.persistedChangeset);
+        assertTrue(!this.received);
+        try {
+            decorator.persistChanges(null);
+            fail("Should have failed by now");
+        } catch (ConcurrencyException e) {
+            // expected
+        }
+        assertTrue(!this.received);
+    }
     
-
-
-
     private class TestNotifier implements EventStoreCommitNotifier {
         @Override
         public void notifyListeners(ChangeSet changeSet) {
@@ -106,6 +117,8 @@ public class NotifyingPersistenceDecoratorTest implements EventStorePersistence 
 
     @Override
     public void persistChanges(ChangeSet changeSet) throws ConcurrencyException {
+        if (changeSet == null)
+            throw new ConcurrencyException();
         this.persistedChangeset = changeSet;
     }
 
