@@ -39,7 +39,7 @@ public class MockPersistence implements EventStorePersistence {
 
     @Override
     public void persistChanges(ChangeSet changeSet) throws ConcurrencyException {
-        if (RESET.equals(changeSet.bucketId()) {
+        if (RESET.equals(changeSet.bucketId())) {
             this.cleanup();
             return;
         }
