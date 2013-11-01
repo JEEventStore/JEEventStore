@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns="http://java.sun.com/xml/ns/javaee" 
+    xmlns:ejb="http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd" 
+    version="3.1">
+
+    <enterprise-beans>    
+
+        <session>
+            <ejb-name>EventStorePersistence</ejb-name>
+            <ejb-class>org.jeeventstore.core.store.MockPersistence</ejb-class>
+            <session-type>Singleton</session-type>
+        </session>
+        
+        <session>
+            <ejb-name>EventStoreCommitNotifier</ejb-name>
+            <ejb-class>org.jeeventstore.core.notifier.SyncEventStoreCommitNotifier</ejb-class>
+            <session-type>Singleton</session-type>
+        </session>
+
+        <session>
+            <ejb-name>EventStore</ejb-name>
+            <ejb-class>org.jeeventstore.core.store.EventStoreService</ejb-class>
+            <session-type>Stateless</session-type>
+        </session>
+
+    </enterprise-beans>
+
+</ejb-jar>
