@@ -68,25 +68,8 @@ public class AsyncEventStoreCommitNotifier
     @Resource
     private TimerService timerService;
 
+    @Resource(name = "retryInterval")
     private long retryInterval = 100;
-
-    /**
-     * Bean initialization, used to load configuration settings, if any.
-     */
-    @PostConstruct
-    public void init() {
-        // Test whether a custom retry interval has been configured for this
-        try {
-            InitialContext ic = new InitialContext();
-            Long tmpRetry = (Long) ic.lookup("java:comp/env/retryInterval");
-            if (tmpRetry != null)
-                retryInterval = tmpRetry;
-        } catch (NameNotFoundException e) {
-            log.info("Error looking up retryInterval variable, falling back to default of " + retryInterval + "ms");
-        } catch (NamingException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Override
     @Lock(LockType.READ)
