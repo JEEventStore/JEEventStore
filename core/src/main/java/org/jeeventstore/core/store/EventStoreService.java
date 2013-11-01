@@ -47,8 +47,7 @@ public class EventStoreService implements EventStore {
 
     @Override
     public ReadableEventStream openStreamForReading(String bucketId, String streamId, long version) {
-        NotifyingPersistenceDecorator deco = new NotifyingPersistenceDecorator(persistence, persistenceNotifier);
-        return OptimisticEventStream.createReadable(bucketId, streamId, version, deco);
+        return OptimisticEventStream.createReadable(bucketId, streamId, version, persistence);
     }
 
     @Override
