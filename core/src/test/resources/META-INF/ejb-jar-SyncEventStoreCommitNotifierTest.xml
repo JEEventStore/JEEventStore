@@ -9,6 +9,7 @@
 
         <session>
             <ejb-name>EventStoreCommitNotifier</ejb-name>
+            <business-local>org.jeeventstore.core.notifier.EventStoreCommitNotifier</business-local>
             <ejb-class>org.jeeventstore.core.notifier.SyncEventStoreCommitNotifier</ejb-class>
             <session-type>Singleton</session-type>
         </session>

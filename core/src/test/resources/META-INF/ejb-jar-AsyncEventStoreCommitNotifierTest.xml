@@ -9,6 +9,7 @@
 
         <session>
             <ejb-name>EventStoreCommitNotifier</ejb-name>
+            <business-local>org.jeeventstore.core.notifier.EventStoreCommitNotifier</business-local>
             <ejb-class>org.jeeventstore.core.notifier.AsyncEventStoreCommitNotifier</ejb-class>
             <session-type>Singleton</session-type>
             <env-entry>
@@ -16,7 +17,7 @@
                 <env-entry-type>java.lang.Long</env-entry-type>
                 <env-entry-value>50</env-entry-value>
             </env-entry>
-        </session>
+        </session>  
 
     </enterprise-beans>
 

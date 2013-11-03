@@ -3,14 +3,13 @@ package org.jeeventstore.core.notifier;
 import java.io.File;
 import javax.ejb.EJB;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.testng.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jeeventstore.core.DefaultDeployment;
+import org.jeeventstore.core.ChangeSet;
 import org.jeeventstore.core.store.TestChangeSet;
-import static org.testng.Assert.*;
-import org.testng.annotations.Test;
+import org.jeeventstore.tests.DefaultDeployment;
 
 /**
  *
@@ -19,17 +18,17 @@ import org.testng.annotations.Test;
 public class SyncEventStoreCommitNotifierTest extends AbstractEventStoreCommitNotifierTest {
 
     @Deployment
-    public static EnterpriseArchive deployment() {
-        EnterpriseArchive ear = DefaultDeployment.ear("org.jeeventstore:jeeventstore-core");
-        ear.addAsModule(ShrinkWrap.create(JavaArchive.class)
-                .addAsManifestResource(new File("src/test/resources/META-INF/beans.xml"))
-                .addAsManifestResource(
-                    new File("src/test/resources/META-INF/ejb-jar-SyncEventStoreCommitNotifierTest.xml"),
-                             "ejb-jar.xml")
-                .addClass(AbstractEventStoreCommitNotifierTest.class)
-                .addClass(SyncEventStoreCommitNotifierTest.class)
-                .addClass(TestChangeSet.class)
+    public static Archive<?> deployment() {
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class)
+                .addAsModule(ShrinkWrap.create(JavaArchive.class)
+                        .addAsManifestResource(new File("src/test/resources/META-INF/beans.xml"))
+                        .addAsManifestResource(
+                                new File("src/test/resources/META-INF/ejb-jar-SyncEventStoreCommitNotifierTest.xml"),
+                                "ejb-jar.xml")
+                        .addPackage(AsyncEventStoreCommitNotifier.class.getPackage())
+                        .addClass(ChangeSet.class)
                 );
+
         return ear;
     }
 
