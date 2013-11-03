@@ -7,29 +7,22 @@ import java.util.List;
 import java.util.UUID;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
-import javax.persistence.Persistence;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.testng.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jeeventstore.core.ChangeSet;
 import org.jeeventstore.core.ConcurrencyException;
-import org.jeeventstore.core.DefaultDeployment;
-import org.jeeventstore.core.DuplicateCommitException;
 import org.jeeventstore.core.ReadableEventStream;
 import org.jeeventstore.core.WritableEventStream;
-import org.jeeventstore.core.notifier.AbstractEventStoreCommitNotifierTest;
-import static org.jeeventstore.core.notifier.AbstractEventStoreCommitNotifierTest.WAIT_TIME;
 import org.jeeventstore.core.notifier.EventStoreCommitListener;
 import org.jeeventstore.core.notifier.EventStoreCommitNotification;
 import org.jeeventstore.core.notifier.EventStoreCommitNotifier;
-import org.jeeventstore.core.notifier.SyncEventStoreCommitNotifierTest;
 import org.jeeventstore.core.persistence.EventStorePersistence;
+import org.jeeventstore.tests.DefaultDeployment;
 import static org.testng.Assert.*;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 
 public class EventStoreServiceTest extends Arquillian 
@@ -46,17 +39,18 @@ public class EventStoreServiceTest extends Arquillian
     }
 
     @Deployment
-    public static EnterpriseArchive deployment() {
-        EnterpriseArchive ear = DefaultDeployment.ear("org.jeeventstore:jeeventstore-core");
-        ear.addAsModule(ShrinkWrap.create(JavaArchive.class)
-                .addAsManifestResource(new File("src/test/resources/META-INF/beans.xml"))
-                .addAsManifestResource(
-                    new File("src/test/resources/META-INF/ejb-jar-EventStoreServiceTest.xml"),
-                             "ejb-jar.xml")
-                .addClass(MockPersistence.class)
-                .addClass(EventStoreServiceTest.class)
-                .addClass(TestUtils.class)
-                .addClass(TestChangeSet.class)
+    public static Archive<?> deployment() {
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class)
+                .addAsModule(ShrinkWrap.create(JavaArchive.class)
+                        .addAsManifestResource(new File("src/test/resources/META-INF/beans.xml"))
+                        .addAsManifestResource(new File("src/test/resources/META-INF/ejb-jar-EventStoreServiceTest.xml"),
+                                "ejb-jar.xml")
+                        .addPackage(EventStoreCommitNotifier.class.getPackage())
+                        .addPackage(EventStore.class.getPackage())
+                        .addClass(MockPersistence.class)
+                        .addClass(EventStoreServiceTest.class)
+                        .addClass(TestUtils.class)
+                        .addClass(TestChangeSet.class)
                 );
         return ear;
     }

@@ -9,18 +9,21 @@
 
         <session>
             <ejb-name>EventStorePersistence</ejb-name>
+            <business-local>org.jeeventstore.core.persistence.EventStorePersistence</business-local>
             <ejb-class>org.jeeventstore.core.store.MockPersistence</ejb-class>
             <session-type>Singleton</session-type>
         </session>
         
         <session>
             <ejb-name>EventStoreCommitNotifier</ejb-name>
+            <business-local>org.jeeventstore.core.notifier.EventStoreCommitNotifier</business-local>
             <ejb-class>org.jeeventstore.core.notifier.SyncEventStoreCommitNotifier</ejb-class>
             <session-type>Singleton</session-type>
         </session>
 
         <session>
             <ejb-name>EventStore</ejb-name>
+            <business-local>org.jeeventstore.core.store.EventStore</business-local>
             <ejb-class>org.jeeventstore.core.store.EventStoreService</ejb-class>
             <session-type>Stateless</session-type>
         </session>
