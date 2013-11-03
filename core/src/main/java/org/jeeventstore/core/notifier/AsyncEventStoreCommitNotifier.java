@@ -21,23 +21,20 @@
 
 package org.jeeventstore.core.notifier;
 
+import java.io.Serializable;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
+import javax.ejb.TimedObject;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingException;
 import org.jeeventstore.core.ChangeSet;
 
 /**
@@ -56,12 +53,14 @@ import org.jeeventstore.core.ChangeSet;
  * The notification order is currently in the order of registration, but this is
  * not a guarantee and might change in the future.
  * 
+ * Glassfish requires {@link TimedObject}.
+ * 
  * @author Alexander Langer
  */
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
 public class AsyncEventStoreCommitNotifier
         extends AbstractEventStoreCommitNotifier 
-        implements EventStoreCommitNotifier {
+        implements EventStoreCommitNotifier, TimedObject, Serializable {
 
     private static final Logger log = Logger.getLogger(AsyncEventStoreCommitNotifier.class.getName());
 
@@ -95,10 +94,17 @@ public class AsyncEventStoreCommitNotifier
      */
     @Timeout
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void handleTimeout(Timer timer) {
-        ChangeSet changeSet = (ChangeSet) timer.getInfo();
-        this.performNotification(changeSet);
-        timer.cancel();
+    @Override
+    public void ejbTimeout(Timer timer) {
+        try {
+            ChangeSet changeSet = (ChangeSet) timer.getInfo();
+            this.performNotification(changeSet);
+            // if we reach this line, no exception was thrown, i.e., the
+            // notification was successful and the timer can be cancelled
+            timer.cancel();
+        } catch (Exception e) {
+            log.info("Error performing notification: " + e.getMessage());
+        }
     }
     
 }
