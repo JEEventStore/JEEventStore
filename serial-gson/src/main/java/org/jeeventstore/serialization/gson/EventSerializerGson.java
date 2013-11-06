@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
-import javax.ejb.ConcurrencyManagement;
-import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.enterprise.inject.Instance;
@@ -20,7 +18,6 @@ import org.jeeventstore.core.serialization.EventSerializer;
  * An EventSerializer implementation using Google's Gson library.
  * @author Alexander Langer
  */
-@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class EventSerializerGson implements EventSerializer {
 
     private static final Logger log = Logger.getLogger(EventSerializerGson.class.getName());
@@ -38,6 +35,7 @@ public class EventSerializerGson implements EventSerializer {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(EventList.class, new EventListTypeConverter());
 
+        // register client's type adapters
         Iterator<EventSerializerGsonTypeConverter> convit = typeConverters.iterator();
         while (convit.hasNext()) {
             EventSerializerGsonTypeConverter conv = convit.next();
@@ -45,7 +43,6 @@ public class EventSerializerGson implements EventSerializer {
                     conv.convertedType().getCanonicalName());
             builder.registerTypeAdapter(conv.convertedType(), conv);
         }
-
         this.gson = builder.create();
     }
 
