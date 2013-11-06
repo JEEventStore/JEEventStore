@@ -11,9 +11,10 @@
     <name>JEEventStore: Parent Module</name>
 
     <modules>
+        <module>testutils</module>
         <module>core</module>
-        <!--module>persistence-jpa</module-->
         <module>serial-gson</module>
+        <module>persistence-jpa</module>
     </modules>
 
     <properties>
@@ -29,6 +30,32 @@
         <version.org.jboss.as>7.1.2.Final</version.org.jboss.as>
     </properties>
 
+    <dependencies>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-depchain</artifactId>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.testng</groupId>
+            <artifactId>arquillian-testng-container</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet</artifactId>
+        </dependency>
+
+    </dependencies>
+
     <dependencyManagement>
         <dependencies>
 
@@ -36,14 +63,18 @@
                 <groupId>org.jeeventstore</groupId>
                 <artifactId>jeeventstore-core</artifactId>
                 <version>${project.version}</version>
-                <type>ejb</type>
             </dependency>
 
             <dependency>
                 <groupId>org.jeeventstore</groupId>
                 <artifactId>jeeventstore-serialization-gson</artifactId>
                 <version>${project.version}</version>
-                <type>ejb</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jeeventstore</groupId>
+                <artifactId>jeeventstore-persistence-jpa</artifactId>
+                <version>${project.version}</version>
             </dependency>
 
             <!-- Java EE 6.0 API.  Here's why we are not using javaee-api:
@@ -139,41 +170,15 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <skipTests>true</skipTests>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <!-- An optional Arquillian testing profile that executes tests 
-            in your JBoss AS instance -->
-            <!-- This profile will start a new JBoss AS instance, and execute 
-            the test, shutting it down when done -->
-            <!-- Run with: mvn clean test -Parq-jbossas-managed -->
-            <id>arq-jbossas-managed</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <skip>false</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
             <dependencies>
                 <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-container-managed</artifactId>
-                    <version>${version.org.jboss.as}</version>
-                    <scope>test</scope>
+                    <groupId>javax</groupId>   
+                    <artifactId>javaee-api</artifactId>   
+                    <version>6.0</version> 
+                    <scope>provided</scope>
                 </dependency>
             </dependencies>
         </profile>
@@ -183,17 +188,12 @@
             in a remote JBoss AS instance -->
             <!-- Run with: mvn clean test -Parq-jbossas-remote -->
             <id>arq-jbossas-remote</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <skip>false</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
             <dependencies>
+                <dependency>
+                    <groupId>org.jboss.spec</groupId>
+                    <artifactId>jboss-javaee-6.0</artifactId>
+                    <type>pom</type>
+                </dependency>
                 <dependency>
                     <groupId>org.jboss.as</groupId>
                     <artifactId>jboss-as-arquillian-container-remote</artifactId>
@@ -201,6 +201,56 @@
                     <scope>test</scope>
                 </dependency>
             </dependencies>
+        </profile>
+        
+
+        <profile>
+            <!-- An optional Arquillian testing profile that executes tests 
+            in an embedded Glassfish instance -->
+            <!-- Run with: mvn clean test -Parq-glassfish-embedded -->
+            <id>arq-glassfish-embedded</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-glassfish-embedded-3.1</artifactId>
+                    <version>1.0.0.CR4</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish.main.extras</groupId>
+                    <artifactId>glassfish-embedded-all</artifactId>
+                    <version>3.1.2.2</version>
+                </dependency>
+                <dependency>
+                    <groupId>javax</groupId>   
+                    <artifactId>javaee-api</artifactId>   
+                    <version>6.0</version> 
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                    <version>1.2.16</version>
+                </dependency>
+
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <arquillian.launch>glassfish-embedded</arquillian.launch>
+                                <java.util.logging.config.file>
+                                    ${basedir}/src/test/resources/customlogging.properties
+                                </java.util.logging.config.file>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
     </profiles>
