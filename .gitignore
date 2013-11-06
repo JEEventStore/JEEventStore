@@ -7,3 +7,5 @@ nbactions.xml
 /core/target/
 /persistence-jpa/target/
 /serial-gson/target/
+/target/
+/testutils/target/
