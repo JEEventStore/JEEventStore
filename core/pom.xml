@@ -15,40 +15,14 @@
     <name>JEEventStore: Core Library</name>
 
     <dependencies> 
+        
+        <!-- Testing -->
 
         <dependency>
-            <groupId>org.jboss.spec</groupId>
-            <artifactId>jboss-javaee-6.0</artifactId>
-            <type>pom</type>
-        </dependency>
-
-        <dependency> 
-            <groupId>javax.enterprise</groupId> 
-            <artifactId>cdi-api</artifactId>
-        </dependency>
-
-        <!-- Testing Framework -->
-
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.shrinkwrap.resolver</groupId>
-            <artifactId>shrinkwrap-resolver-depchain</artifactId>
-            <type>pom</type>
+            <groupId>org.jeeventstore</groupId>
+            <artifactId>jeeventstore-testutils</artifactId>
+            <version>${project.version}</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.testng</groupId>
-            <artifactId>arquillian-testng-container</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.protocol</groupId>
-            <artifactId>arquillian-protocol-servlet</artifactId>
         </dependency>
 
     </dependencies>
