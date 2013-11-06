@@ -12,6 +12,7 @@
             <business-local>org.jeeventstore.core.notifier.EventStoreCommitNotifier</business-local>
             <ejb-class>org.jeeventstore.core.notifier.AsyncEventStoreCommitNotifier</ejb-class>
             <session-type>Singleton</session-type>
+            <init-on-startup>true</init-on-startup>
             <env-entry>
                 <env-entry-name>retryInterval</env-entry-name>
                 <env-entry-type>java.lang.Long</env-entry-type>

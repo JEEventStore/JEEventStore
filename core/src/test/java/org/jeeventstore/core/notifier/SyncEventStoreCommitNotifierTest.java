@@ -19,8 +19,8 @@ public class SyncEventStoreCommitNotifierTest extends AbstractEventStoreCommitNo
 
     @Deployment
     public static Archive<?> deployment() {
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class)
-                .addAsModule(ShrinkWrap.create(JavaArchive.class)
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+                .addAsModule(ShrinkWrap.create(JavaArchive.class, "ejb.jar")
                         .addAsManifestResource(new File("src/test/resources/META-INF/beans.xml"))
                         .addAsManifestResource(
                                 new File("src/test/resources/META-INF/ejb-jar-SyncEventStoreCommitNotifierTest.xml"),
@@ -32,7 +32,7 @@ public class SyncEventStoreCommitNotifierTest extends AbstractEventStoreCommitNo
         return ear;
     }
 
-    @EJB
+    @EJB(lookup = "java:global/test/ejb/EventStoreCommitNotifier")
     private EventStoreCommitNotifier notifier;
 
     @Override

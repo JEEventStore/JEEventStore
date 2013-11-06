@@ -24,8 +24,8 @@ public class AsyncEventStoreCommitNotifierTest extends AbstractEventStoreCommitN
 
     @Deployment
     public static Archive<?> deployment() {
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class)
-                .addAsModule(ShrinkWrap.create(JavaArchive.class)
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+                .addAsModule(ShrinkWrap.create(JavaArchive.class, "ejb.jar")
                         .addAsManifestResource(new File("src/test/resources/META-INF/beans.xml"))
                         .addAsManifestResource(
                             new File("src/test/resources/META-INF/ejb-jar-AsyncEventStoreCommitNotifierTest.xml"),
@@ -36,10 +36,10 @@ public class AsyncEventStoreCommitNotifierTest extends AbstractEventStoreCommitN
         return ear;
     }
 
-    @EJB
+    @EJB(lookup = "java:global/test/ejb/EventStoreCommitNotifier")
     private EventStoreCommitNotifier notifier;
 
-    @EJB
+    @EJB(lookup = "java:global/test/ejb/TransactionHelper")
     private TransactionHelper helper;
 
     @Override
@@ -52,12 +52,9 @@ public class AsyncEventStoreCommitNotifierTest extends AbstractEventStoreCommitN
 
     @Override
     public void receive(EventStoreCommitNotification notification) {
-        System.out.println("in receive von async: " + triesUntilSuccess);
         if (triesUntilSuccess-- <= 0) {
             // order is important, sleep must come first
-            System.out.println("ding dong");
             this.sleep(this.waitTime);
-            System.out.println("after sleep");
             super.receive(notification);
         } else
             throw new RuntimeException("Failed because tries left: " + triesUntilSuccess);
