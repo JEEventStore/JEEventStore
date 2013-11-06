@@ -40,28 +40,27 @@ public class EventStoreServiceTest extends Arquillian
 
     @Deployment
     public static Archive<?> deployment() {
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class)
-                .addAsModule(ShrinkWrap.create(JavaArchive.class)
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+                .addAsModule(ShrinkWrap.create(JavaArchive.class, "ejb.jar")
                         .addAsManifestResource(new File("src/test/resources/META-INF/beans.xml"))
-                        .addAsManifestResource(new File("src/test/resources/META-INF/ejb-jar-EventStoreServiceTest.xml"),
+                        .addAsManifestResource(new File(
+                                "src/test/resources/META-INF/ejb-jar-EventStoreServiceTest.xml"),
                                 "ejb-jar.xml")
                         .addPackage(EventStoreCommitNotifier.class.getPackage())
                         .addPackage(EventStore.class.getPackage())
-                        .addClass(MockPersistence.class)
-                        .addClass(EventStoreServiceTest.class)
-                        .addClass(TestUtils.class)
-                        .addClass(TestChangeSet.class)
+                        .addPackage(ChangeSet.class.getPackage())
+                        .addClass(EventStorePersistence.class)
                 );
         return ear;
     }
 
-    @EJB
+    @EJB(lookup = "java:global/test/ejb/EventStorePersistence")
     private EventStorePersistence persistence;
 
-    @EJB
+    @EJB(lookup = "java:global/test/ejb/EventStoreCommitNotifier")
     private EventStoreCommitNotifier notifier;
 
-    @EJB
+    @EJB(lookup = "java:global/test/ejb/EventStore")
     private EventStore eventStore;
 
     private void cleanup() {
