@@ -27,6 +27,7 @@ public class SyncEventStoreCommitNotifierTest extends AbstractEventStoreCommitNo
                                 "ejb-jar.xml")
                         .addPackage(AsyncEventStoreCommitNotifier.class.getPackage())
                         .addClass(ChangeSet.class)
+                        .addClass(TestChangeSet.class)
                 );
 
         return ear;

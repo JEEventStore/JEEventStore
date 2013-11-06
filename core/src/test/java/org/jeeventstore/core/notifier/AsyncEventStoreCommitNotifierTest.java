@@ -32,6 +32,7 @@ public class AsyncEventStoreCommitNotifierTest extends AbstractEventStoreCommitN
                             "ejb-jar.xml")
                         .addPackage(AsyncEventStoreCommitNotifier.class.getPackage())
                         .addClass(ChangeSet.class)
+                        .addClass(TestChangeSet.class)
                 );
         return ear;
     }
