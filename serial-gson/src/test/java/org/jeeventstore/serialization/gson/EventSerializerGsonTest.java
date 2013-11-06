@@ -5,14 +5,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.xml.rpc.encoding.Serializer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jeeventstore.core.DefaultDeployment;
 import org.jeeventstore.core.serialization.EventSerializer;
+import org.jeeventstore.tests.DefaultDeployment;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
@@ -29,20 +28,19 @@ public class EventSerializerGsonTest extends Arquillian {
 
     @Deployment
     public static EnterpriseArchive deployment() {
-        EnterpriseArchive ear = DefaultDeployment.ear("org.jeeventstore:jeeventstore-serialization-gson");
-        ear.addAsModule(ShrinkWrap.create(JavaArchive.class)
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "testear.ear");
+        DefaultDeployment.addDependencies(ear, "org.jeeventstore:jeeventstore-serialization-gson", false);
+        ear.addAsModule(ShrinkWrap.create(JavaArchive.class, "ejb.jar")
                 .addAsManifestResource(new File("src/test/resources/META-INF/beans.xml"))
                 .addAsManifestResource(
                     new File("src/test/resources/META-INF/ejb-jar-EventSerializerGsonTest.xml"),
                              "ejb-jar.xml")
-                .addClass(EventSerializerGsonTest.class)
-                .addClass(TestTypeConverter.class)
-                .addClass(TestObject.class)
+                .addPackage(EventSerializerGson.class.getPackage())
                 );
         return ear;
     }
 
-    @EJB
+    @EJB(lookup = "java:global/testear/ejb/EventSerializer")
     private EventSerializer serializer;
 
     private List<String> instance() {
