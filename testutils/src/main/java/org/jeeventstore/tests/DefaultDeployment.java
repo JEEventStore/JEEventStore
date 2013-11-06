@@ -1,4 +1,4 @@
-package org.jeeventstore.core;
+package org.jeeventstore.tests;
 
 import java.io.File;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -27,21 +27,29 @@ public class DefaultDeployment {
     public static EnterpriseArchive ear(String artifact) {
 	System.out.println("Generating standard EAR deployment");
 	EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class);
+        addDependencies(ear, artifact, true);
+        return ear;
+    }
 
+    public static void addDependencies(EnterpriseArchive ear, String artifact, boolean includeArtifact) {
+        String lib = artifact.split(":")[1];
         try {
             File[] libs = resolve(artifact);
-
-            int i = 0;
-            for (File f : libs) {
-                System.out.println("DefaultDeployment, add " + i + ": " + f.getAbsolutePath());
-                ear.addAsLibrary(f);
+            for (int i = 0; i < libs.length; i++) {
+                if (i == 0 && !includeArtifact)
+                    continue;
+                File f = libs[i];
+                String filename = (i > 0 ? f.getName() : lib + ".jar");
+                System.out.println("Adding dependency #" + i 
+                        + ": " + f.getAbsolutePath() 
+                        + " as " + filename);
+                ear.addAsLibrary(f, filename);
             }
         } catch (RuntimeException e) {
             // printing the error helps with testing
             System.err.println(">>>>>> ERROR: " + e + " / " + e.getCause());
             throw e;
         }
-        return ear;
     }
 
 }
