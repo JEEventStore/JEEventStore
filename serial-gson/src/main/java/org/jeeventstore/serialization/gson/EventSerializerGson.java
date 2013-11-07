@@ -12,7 +12,7 @@ import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import org.jeeventstore.core.serialization.EventSerializer;
+import org.jeeventstore.EventSerializer;
 
 /**
  * An EventSerializer implementation using Google's Gson library.

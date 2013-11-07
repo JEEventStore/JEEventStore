@@ -10,7 +10,7 @@ import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jeeventstore.core.serialization.EventSerializer;
+import org.jeeventstore.EventSerializer;
 import org.jeeventstore.tests.DefaultDeployment;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;

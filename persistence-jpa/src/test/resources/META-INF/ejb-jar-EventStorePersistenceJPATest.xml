@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns="http://java.sun.com/xml/ns/javaee" 
+    xmlns:ejb="http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd" 
+    version="3.1">
+
+    <enterprise-beans>    
+
+        <session>
+            <ejb-name>EventSerializer</ejb-name>
+            <business-local>org.jeeventstore.core.serialization.EventSerializer</business-local>
+            <ejb-class>org.jeeventstore.serialization.gson.EventSerializerGson</ejb-class>
+
+hier jetzt einen mock serializer bauen, der vielleicht nur normales java serialize macht?
+
+            <session-type>Singleton</session-type>
+            <init-on-startup>true</init-on-startup>
+        </session>
+
+        <session>
+            <ejb-name>EventStorePersistenceJPA</ejb-name>
+            <business-local>org.jeeventstore.core.persistence.EventStorePersistence</business-local>
+            <ejb-class>org.jeeventstore.persistence.jpa.EventStorePersistenceJPA</ejb-class>
+            <session-type>Stateless</session-type>
+            <persistence-context-ref>
+                <persistence-context-ref-name>entityManager</persistence-context-ref-name>
+                <persistence-unit-name>TestPU</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>
+                        org.jeeventstore.persistence.jpa.EventStorePersistenceJPA
+                    </injection-target-class>
+                    <injection-target-name>entityManager</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+        </session>
+
+    </enterprise-beans>
+
+</ejb-jar>

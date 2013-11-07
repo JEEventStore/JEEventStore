@@ -9,7 +9,7 @@
 
         <session>
             <ejb-name>EventSerializer</ejb-name>
-            <business-local>org.jeeventstore.core.serialization.EventSerializer</business-local>
+            <business-local>org.jeeventstore.EventSerializer</business-local>
             <ejb-class>org.jeeventstore.serialization.gson.EventSerializerGson</ejb-class>
             <session-type>Singleton</session-type>
             <init-on-startup>true</init-on-startup>
