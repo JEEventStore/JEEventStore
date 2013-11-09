@@ -28,6 +28,8 @@
         <version.shrinkwrap.resolver>2.0.0</version.shrinkwrap.resolver>
         <version.org.jboss.arquillian>1.1.1.Final</version.org.jboss.arquillian>
         <version.org.jboss.as>7.1.2.Final</version.org.jboss.as>
+        <tomee.version>1.5.2</tomee.version>
+        <tomee.classifier>plus</tomee.classifier>
     </properties>
 
     <dependencies>
@@ -78,7 +80,7 @@
             </dependency>
 
             <!-- Java EE 6.0 API.  Here's why we are not using javaee-api:
-                https://community.jboss.org/wiki/WhatsTheCauseOfThisExceptionJavalangClassFormatErrorAbsentCode --> 
+            https://community.jboss.org/wiki/WhatsTheCauseOfThisExceptionJavalangClassFormatErrorAbsentCode --> 
             <dependency>
                 <groupId>org.jboss.spec</groupId>
                 <artifactId>jboss-javaee-6.0</artifactId>
@@ -102,7 +104,7 @@
             </dependency>
 
             <!-- Override dependency resolver with test version.
-                 This must go *BEFORE* the Arquillian BOM. -->
+            This must go *BEFORE* the Arquillian BOM. -->
             <dependency>
                 <groupId>org.jboss.shrinkwrap.resolver</groupId>
                 <artifactId>shrinkwrap-resolver-bom</artifactId>
@@ -210,17 +212,20 @@
             <!-- Run with: mvn clean test -Parq-glassfish-embedded -->
             <id>arq-glassfish-embedded</id>
             <dependencies>
+                
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
                     <artifactId>arquillian-glassfish-embedded-3.1</artifactId>
                     <version>1.0.0.CR4</version>
                     <scope>test</scope>
                 </dependency>
+
                 <dependency>
                     <groupId>org.glassfish.main.extras</groupId>
                     <artifactId>glassfish-embedded-all</artifactId>
                     <version>3.1.2.2</version>
                 </dependency>
+
                 <dependency>
                     <groupId>javax</groupId>   
                     <artifactId>javaee-api</artifactId>   
@@ -242,11 +247,58 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <systemPropertyVariables>
-                                <arquillian.launch>glassfish-embedded</arquillian.launch>
-                                <java.util.logging.config.file>
+                                <!--arquillian.launch>glassfish-embedded</arquillian.launch-->
+                                <java.util.logging.config.file>
                                     ${basedir}/src/test/resources/customlogging.properties
                                 </java.util.logging.config.file>
-                            </systemPropertyVariables>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <!-- An optional Arquillian testing profile that executes tests 
+            in a remote Apache TomEE instance -->
+            <!-- Run with: mvn clean test -Parq-tomee-embedded -->
+            <id>arq-tomee-embedded</id>
+            <dependencies>
+
+                <dependency>
+                    <groupId>org.apache.openejb</groupId>
+                    <artifactId>javaee-api</artifactId>
+                    <version>6.0-5</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.openejb</groupId>
+                    <artifactId>apache-tomee</artifactId>
+                    <version>${tomee.version}</version>
+                    <classifier>${tomee.classifier}</classifier>
+                    <type>zip</type>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.openejb</groupId>
+                    <artifactId>arquillian-tomee-embedded</artifactId>
+                    <version>${tomee.version}</version>
+                    <scope>test</scope>
+                </dependency>
+
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <tomee.classifier>${tomee.classifier}</tomee.classifier>
+                                <tomee.version>${tomee.version}</tomee.version>
+                                <tomee.httpPort>-1</tomee.httpPort>
+                                <tomee.stopPort>-1</tomee.stopPort>
+                            </systemPropertyVariables>
                         </configuration>
                     </plugin>
                 </plugins>
