@@ -14,7 +14,7 @@
         <module>testutils</module>
         <module>core</module>
         <module>serial-gson</module>
-        <module>persistence-jpa</module>
+        <!--module>persistence-jpa</module-->
     </modules>
 
     <properties>
@@ -37,6 +37,7 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -49,11 +50,13 @@
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>
+            <scope>test</scope>
         </dependency>
         
         <dependency>
             <groupId>org.jboss.arquillian.protocol</groupId>
             <artifactId>arquillian-protocol-servlet</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -151,7 +154,6 @@
                     </configuration>
                 </plugin>
 
-                <!-- Versions prior 2.9 contains a bug -->
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.16</version>
@@ -208,8 +210,24 @@
                     <scope>test</scope>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <!--arquillian.launch>jbossas-remote</arquillian.launch-->
+                                <defaultProtocol>
+                                    <![CDATA[<defaultProtocol type="Servlet 3.0" />]]>
+                                </defaultProtocol>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
-        
+
 
         <profile>
             <!-- An optional Arquillian testing profile that executes tests 
