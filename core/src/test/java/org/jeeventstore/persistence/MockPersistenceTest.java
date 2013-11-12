@@ -70,7 +70,6 @@ public class MockPersistenceTest {
 
     private void verify(Iterator<ChangeSet> it, int from, int to) {
         for (int i = from; i <= to; i++) {
-            System.out.println("compare: " + i);
             assertTrue(it.hasNext());
             ChangeSet cs = it.next();
             assertEquals(i, cs.streamVersion());
