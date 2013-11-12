@@ -35,10 +35,10 @@ import org.jeeventstore.WritableEventStream;
  */
 public class EventStoreService implements EventStore {
 
-    @EJB
+    @EJB(name="commitNotifier")
     private EventStoreCommitNotifier persistenceNotifier;
 
-    @EJB
+    @EJB(name="persistence")
     private EventStorePersistence persistence;
 
     @Override
