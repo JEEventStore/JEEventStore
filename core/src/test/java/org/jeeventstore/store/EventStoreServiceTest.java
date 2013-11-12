@@ -70,14 +70,14 @@ public class EventStoreServiceTest extends Arquillian
     private void cleanup() {
         try {
             notifier.addListener(this);
-        } catch (IllegalStateException e) {
+        } catch (IllegalStateException | EJBException e) {
             // ignore
         }
         caught = false;
         caughtCS = null;
         try {
             persistence.persistChanges(MockPersistence.resetCommand());
-        } catch (ConcurrencyException e) {
+        } catch (ConcurrencyException | EJBException e) {
             // ignore
         }
     }
