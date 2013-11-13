@@ -9,3 +9,4 @@ nbactions.xml
 /serial-gson/target/
 /target/
 /testutils/target/
+/testhelpers/target/

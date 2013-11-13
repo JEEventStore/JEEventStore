@@ -12,6 +12,7 @@
 
     <modules>
         <module>testutils</module>
+        <module>testhelpers</module>
         <module>core</module>
         <module>serial-gson</module>
         <!--module>persistence-jpa</module-->

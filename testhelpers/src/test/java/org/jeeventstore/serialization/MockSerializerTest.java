@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.jeeventstore.EventSerializer;
+import org.jeeventstore.serialization.MockSerializer;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
