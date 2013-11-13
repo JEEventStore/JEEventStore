@@ -14,7 +14,7 @@ import org.jeeventstore.EventSerializer;
  * A simple serializer for tests using the Object*Stream api.
  * @author Alexander Langer
  */
-public class MockSerializer implements EventSerializer {
+public class JavaSerializer implements EventSerializer {
 
     @Override
     public String serialize(List<? extends Serializable> events) {

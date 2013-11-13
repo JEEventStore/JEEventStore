@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.jeeventstore.EventSerializer;
-import org.jeeventstore.serialization.MockSerializer;
+import org.jeeventstore.serialization.JavaSerializer;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
  *
  * @author Alexander Langer
  */
-public class MockSerializerTest {
+public class JavaSerializerTest {
 
     private final static String RESULT 
             = "ACED0005737200136A6176612E7574696C2E41727261794C6973747881D21D"
@@ -30,7 +30,7 @@ public class MockSerializerTest {
 
     @Test
     public void test_serialize() throws Exception {
-        EventSerializer ms = new MockSerializer();
+        EventSerializer ms = new JavaSerializer();
         List<? extends Serializable> list = data();
         String res = ms.serialize(list);
         Assert.assertEquals(res, RESULT);
@@ -38,7 +38,7 @@ public class MockSerializerTest {
 
     @Test
     public void test_deserialize() throws Exception {
-        EventSerializer ms = new MockSerializer();
+        EventSerializer ms = new JavaSerializer();
         List<? extends Serializable> list = data();
         List reconstructed = ms.deserialize(RESULT);
         Assert.assertEquals(reconstructed, list);
