@@ -199,7 +199,7 @@ public class EventStoreServiceTest extends Arquillian
         wes.commit(c2id);
         assertEquals(initialVersion + 2, wes.version());
 
-        Iterator<ChangeSet> allit = persistence.allChanges();
+        Iterator<ChangeSet> allit = persistence.allChanges(wes.bucketId());
         List<Serializable> events = TestUtils.toList(new EventsIterator<>(allit));
         assertTrue(events.size() >= 10);
         events = events.subList(events.size() - 10, events.size());

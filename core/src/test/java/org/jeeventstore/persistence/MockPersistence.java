@@ -25,7 +25,7 @@ public class MockPersistence implements EventStorePersistence {
     }
 
     @Override
-    public Iterator<ChangeSet> allChanges() {
+    public Iterator<ChangeSet> allChanges(String bucketId) {
         return changeSets.iterator();
     }
 

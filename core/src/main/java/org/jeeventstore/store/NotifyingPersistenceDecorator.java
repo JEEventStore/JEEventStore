@@ -51,8 +51,8 @@ public class NotifyingPersistenceDecorator implements EventStorePersistence {
     }
 
     @Override
-    public Iterator<ChangeSet> allChanges() {
-        return persistence.allChanges();
+    public Iterator<ChangeSet> allChanges(String bucketId) {
+        return persistence.allChanges(bucketId);
     }
 
     @Override

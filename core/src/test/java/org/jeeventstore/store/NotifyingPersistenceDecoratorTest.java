@@ -47,14 +47,14 @@ public class NotifyingPersistenceDecoratorTest implements EventStorePersistence 
     public void test_allChanges() {
         NotifyingPersistenceDecorator decorator = new NotifyingPersistenceDecorator(this, null);
         assertNull(this.changeSetIterator);
-        assertEquals(decorator.allChanges(), this.changeSetIterator);
+        assertEquals(decorator.allChanges("DUMMY"), this.changeSetIterator);
     }
 
     @Test
     public void test_getFrom() {
         NotifyingPersistenceDecorator decorator = new NotifyingPersistenceDecorator(this, null);
         assertNull(this.changeSetIterator);
-        assertEquals(decorator.allChanges(), this.changeSetIterator);
+        assertEquals(decorator.getFrom(null, null, 0, Long.MAX_VALUE), this.changeSetIterator);
     }
 
     @Test
@@ -103,7 +103,7 @@ public class NotifyingPersistenceDecoratorTest implements EventStorePersistence 
     }
 
     @Override
-    public Iterator<ChangeSet> allChanges() {
+    public Iterator<ChangeSet> allChanges(String bucketId) {
         List<ChangeSet> list = new ArrayList<>();
         list.add(new DefaultChangeSet(null, null, 1l, null, new ArrayList<Serializable>()));
         this.changeSetIterator = list.iterator();
@@ -112,7 +112,7 @@ public class NotifyingPersistenceDecoratorTest implements EventStorePersistence 
 
     @Override
     public Iterator<ChangeSet> getFrom(String bucketId, String streamId, long minVersion, long maxVersion) {
-        return this.allChanges();
+        return this.allChanges(bucketId);
     }
 
     @Override

@@ -34,10 +34,10 @@ public class MockPersistenceTest {
 
     @Test
     public void test_reset() throws Exception {
-        Iterator<ChangeSet> it = persistence.allChanges();
+        Iterator<ChangeSet> it = persistence.allChanges("DEFAULT");
         assertTrue(it.hasNext());
         persistence.persistChanges(MockPersistence.resetCommand());
-        it = persistence.allChanges();
+        it = persistence.allChanges("DEFAULT");
         assertTrue(!it.hasNext());
     }
 

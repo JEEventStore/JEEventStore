@@ -119,7 +119,7 @@ public class OptimisticEventStreamTest {
         OptimisticEventStream oes = (OptimisticEventStream) OptimisticEventStream
                 .createReadWritable(BUCKET_ID, STREAM_ID, NUM_CHANGESETS, persistence);
 
-        List<ChangeSet> beforePersisted = TestUtils.toList(persistence.allChanges());
+        List<ChangeSet> beforePersisted = TestUtils.toList(persistence.allChanges(BUCKET_ID));
 
         // now commit some data
         List<Integer> ints = TestUtils.randomdata(10);
@@ -148,7 +148,7 @@ public class OptimisticEventStreamTest {
         OptimisticEventStream oes = (OptimisticEventStream) OptimisticEventStream
                 .createWritable(BUCKET_ID, STREAM_ID, NUM_CHANGESETS, persistence);
 
-        List<ChangeSet> beforePersisted = TestUtils.toList(persistence.allChanges());
+        List<ChangeSet> beforePersisted = TestUtils.toList(persistence.allChanges(BUCKET_ID));
 
         // now commit some data
         List<Integer> ints = TestUtils.randomdata(10);
@@ -253,7 +253,7 @@ public class OptimisticEventStreamTest {
         assertEquals(NUM_CHANGESETS + 1, number_of_persisted_changesets());
 
         // test that only last change added after rollback has been persisted
-        List<ChangeSet> changes = TestUtils.toList(persistence.allChanges());
+        List<ChangeSet> changes = TestUtils.toList(persistence.allChanges(BUCKET_ID));
         ChangeSet cs = changes.get(changes.size() - 1);
         List<Serializable> all = TestUtils.toList(cs.events());
         assertEquals(1, all.size());
@@ -284,7 +284,7 @@ public class OptimisticEventStreamTest {
             List expectedEvents) {
 
         // check that the events have correctly been committed to the persistence
-        List<ChangeSet> afterPersisted = TestUtils.toList(persistence.allChanges());
+        List<ChangeSet> afterPersisted = TestUtils.toList(persistence.allChanges(BUCKET_ID));
         assertEquals(afterPersisted.size(), beforePersisted.size() + 1);
         ChangeSet persistedCS = afterPersisted.get(afterPersisted.size()-1);
 
@@ -296,7 +296,7 @@ public class OptimisticEventStreamTest {
     }
             
     private long number_of_persisted_changesets() {
-        Iterator<ChangeSet> allit = persistence.allChanges();
+        Iterator<ChangeSet> allit = persistence.allChanges(BUCKET_ID);
         List<ChangeSet> all = TestUtils.toList(allit);
         return all.size();
     }

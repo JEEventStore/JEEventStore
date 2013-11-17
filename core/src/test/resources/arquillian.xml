@@ -8,6 +8,9 @@
         <property name="deploymentExportPath">target/</property>
     </engine>
 
+    <container qualifier="glassfish-embedded"/>
+
+    <!-- must be last entry -->
     ${defaultProtocol:}
 
 </arquillian>
