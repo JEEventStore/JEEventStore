@@ -47,12 +47,4 @@ public class TestUtils {
         return list;
     }
 
-    // we do not use IteratorUtils to avoid a dependency
-    public static <T> List<T> toList(Iterator<T> it) {
-        List<T> list = new ArrayList<>();
-        while (it.hasNext())
-            list.add(it.next());
-        return list;
-    }
-
 }

@@ -12,6 +12,7 @@ import org.jeeventstore.WritableEventStream;
 import org.jeeventstore.EventStorePersistence;
 import org.jeeventstore.ConcurrencyException;
 import org.jeeventstore.DuplicateCommitException;
+import org.jeeventstore.util.IteratorUtils;
 import static org.junit.Assert.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -119,7 +120,7 @@ public class OptimisticEventStreamTest {
         OptimisticEventStream oes = (OptimisticEventStream) OptimisticEventStream
                 .createReadWritable(BUCKET_ID, STREAM_ID, NUM_CHANGESETS, persistence);
 
-        List<ChangeSet> beforePersisted = TestUtils.toList(persistence.allChanges(BUCKET_ID));
+        List<ChangeSet> beforePersisted = IteratorUtils.toList(persistence.allChanges(BUCKET_ID));
 
         // now commit some data
         List<Integer> ints = TestUtils.randomdata(10);
@@ -136,7 +137,7 @@ public class OptimisticEventStreamTest {
         assertEquals(oes.bucketId(), BUCKET_ID);
         assertEquals(oes.streamId(), STREAM_ID);
         assertEquals(NUM_CHANGESETS + 1, oes.version());
-        List<Serializable> afterEventsInStream = TestUtils.toList(oes.events());
+        List<Serializable> afterEventsInStream = IteratorUtils.toList(oes.events());
         List<Serializable> newEventsInStream = afterEventsInStream.subList(
                 afterEventsInStream.size() - ints.size(), afterEventsInStream.size());
         assertEquals(ints, newEventsInStream);
@@ -148,7 +149,7 @@ public class OptimisticEventStreamTest {
         OptimisticEventStream oes = (OptimisticEventStream) OptimisticEventStream
                 .createWritable(BUCKET_ID, STREAM_ID, NUM_CHANGESETS, persistence);
 
-        List<ChangeSet> beforePersisted = TestUtils.toList(persistence.allChanges(BUCKET_ID));
+        List<ChangeSet> beforePersisted = IteratorUtils.toList(persistence.allChanges(BUCKET_ID));
 
         // now commit some data
         List<Integer> ints = TestUtils.randomdata(10);
@@ -253,9 +254,9 @@ public class OptimisticEventStreamTest {
         assertEquals(NUM_CHANGESETS + 1, number_of_persisted_changesets());
 
         // test that only last change added after rollback has been persisted
-        List<ChangeSet> changes = TestUtils.toList(persistence.allChanges(BUCKET_ID));
+        List<ChangeSet> changes = IteratorUtils.toList(persistence.allChanges(BUCKET_ID));
         ChangeSet cs = changes.get(changes.size() - 1);
-        List<Serializable> all = TestUtils.toList(cs.events());
+        List<Serializable> all = IteratorUtils.toList(cs.events());
         assertEquals(1, all.size());
         assertEquals(new Long(127), all.get(0));
     }
@@ -275,7 +276,7 @@ public class OptimisticEventStreamTest {
     }
 
     private void compareData(Iterator<Serializable> datait, Iterator<Serializable> streamit) {
-        assertEquals(TestUtils.toList(datait), TestUtils.toList(streamit));
+        assertEquals(IteratorUtils.toList(datait), IteratorUtils.toList(streamit));
     }
 
     private void comparePersisted(
@@ -284,20 +285,20 @@ public class OptimisticEventStreamTest {
             List expectedEvents) {
 
         // check that the events have correctly been committed to the persistence
-        List<ChangeSet> afterPersisted = TestUtils.toList(persistence.allChanges(BUCKET_ID));
+        List<ChangeSet> afterPersisted = IteratorUtils.toList(persistence.allChanges(BUCKET_ID));
         assertEquals(afterPersisted.size(), beforePersisted.size() + 1);
         ChangeSet persistedCS = afterPersisted.get(afterPersisted.size()-1);
 
         assertEquals(persistedCS.bucketId(), BUCKET_ID);
         assertEquals(persistedCS.streamId(), STREAM_ID);
         assertEquals(expectedVersion, persistedCS.streamVersion());
-        List<Serializable> persistedEvents = TestUtils.toList(persistedCS.events());
+        List<Serializable> persistedEvents = IteratorUtils.toList(persistedCS.events());
         assertEquals(expectedEvents, persistedEvents);
     }
             
     private long number_of_persisted_changesets() {
         Iterator<ChangeSet> allit = persistence.allChanges(BUCKET_ID);
-        List<ChangeSet> all = TestUtils.toList(allit);
+        List<ChangeSet> all = IteratorUtils.toList(allit);
         return all.size();
     }
 

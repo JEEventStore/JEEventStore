@@ -24,6 +24,7 @@ import org.jeeventstore.EventStoreCommitNotification;
 import org.jeeventstore.EventStoreCommitNotifier;
 import org.jeeventstore.EventStorePersistence;
 import org.jeeventstore.notifier.SyncEventStoreCommitNotifier;
+import org.jeeventstore.util.IteratorUtils;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
@@ -191,7 +192,7 @@ public class EventStoreServiceTest extends Arquillian
         assertEquals(wes.streamId(), caughtCS.streamId());
         assertEquals(initialVersion + 1, caughtCS.streamVersion());
         assertEquals(c1id, caughtCS.changeSetId());
-        assertEquals(data.subList(0, 6), TestUtils.toList(caughtCS.events()));
+        assertEquals(data.subList(0, 6), IteratorUtils.toList(caughtCS.events()));
 
         for (int i = 6; i < 10; i++)
                 wes.append(data.get(i));
@@ -200,7 +201,7 @@ public class EventStoreServiceTest extends Arquillian
         assertEquals(initialVersion + 2, wes.version());
 
         Iterator<ChangeSet> allit = persistence.allChanges(wes.bucketId());
-        List<Serializable> events = TestUtils.toList(new EventsIterator<>(allit));
+        List<Serializable> events = IteratorUtils.toList(new EventsIterator<>(allit));
         assertTrue(events.size() >= 10);
         events = events.subList(events.size() - 10, events.size());
         assertEquals(data, events);
@@ -211,7 +212,7 @@ public class EventStoreServiceTest extends Arquillian
         assertEquals(wes.streamId(), caughtCS.streamId());
         assertEquals(initialVersion + 2, caughtCS.streamVersion());
         assertEquals(c2id, caughtCS.changeSetId());
-        assertEquals(data.subList(6, 10), TestUtils.toList(caughtCS.events()));
+        assertEquals(data.subList(6, 10), IteratorUtils.toList(caughtCS.events()));
 
     }
 
