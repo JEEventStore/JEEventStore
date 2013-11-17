@@ -43,9 +43,8 @@ public interface EventStorePersistence {
     
     /**
      * Load all changes that have been persisted into the given bucket.
-     * For most persistence implementations, the order is expected to be
-     * roughly in order of persistence, but no strict ordering guarantee can be
-     * given in general.
+     * The order of events is consistent on a per-stream basis, but no
+     * other ordering guarantee can be given.
      * 
      * As the {@link ChangeSet}s might be lazy-loaded, {@link Iterator#next()}
      * may only be called within the same transaction that was open in
