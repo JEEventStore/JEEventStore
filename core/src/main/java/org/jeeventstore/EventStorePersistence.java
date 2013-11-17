@@ -42,7 +42,7 @@ public interface EventStorePersistence {
     boolean existsStream(String bucketId, String streamId);
     
     /**
-     * Load all changes that have been persisted.
+     * Load all changes that have been persisted into the given bucket.
      * For most persistence implementations, the order is expected to be
      * roughly in order of persistence, but no strict ordering guarantee can be
      * given in general.
@@ -51,9 +51,10 @@ public interface EventStorePersistence {
      * may only be called within the same transaction that was open in
      * the call to {@link allChanges} (if transactions are used).
      * 
+     * @param bucketId The identifier of the bucket from which the changes are fetched.
      * @return An iterator to the changes.
      */
-    Iterator<ChangeSet> allChanges();
+    Iterator<ChangeSet> allChanges(String bucketId);
 
     /**
      * Get all {@link ChangeSet}s between {@code minVersion} (exclusive) and
