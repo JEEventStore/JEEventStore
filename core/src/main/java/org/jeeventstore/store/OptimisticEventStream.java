@@ -146,7 +146,7 @@ final class OptimisticEventStream
     }
 
     private void persistChanges(UUID commitId)
-            throws ConcurrencyException {
+            throws ConcurrencyException, DuplicateCommitException {
 
         long newversion = version + 1;
         ChangeSet changes = new DefaultChangeSet(

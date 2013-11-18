@@ -17,6 +17,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jeeventstore.ChangeSet;
+import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.ReadableEventStream;
 import org.jeeventstore.WritableEventStream;
 import org.jeeventstore.EventStoreCommitListener;
@@ -78,7 +79,7 @@ public class EventStoreServiceTest extends Arquillian
         caughtCS = null;
         try {
             persistence.persistChanges(MockPersistence.resetCommand());
-        } catch (ConcurrencyException | EJBException e) {
+        } catch (ConcurrencyException | DuplicateCommitException | EJBException e) {
             // ignore
         }
     }

@@ -82,8 +82,12 @@ public interface EventStorePersistence {
      * Persist the given {@link ChangeSet} to the persistence store.
      * @param changeSet The changes to be persisted.
      * @throws ConcurrencyException if there already exists a {@link ChangeSet}
-     *  within the respective stream that has the same {@link ChangeSet#streamVersion() version}.
+     *  within the respective stream that has the same {@link ChangeSet#streamVersion() version}
+     *  (Not supported with all implementations!).
+     * @throws DuplicateCommitException if there already exists a {@link ChangeSet}
+     *  with the same id (Not supported with all implementations!).
      */
-    void persistChanges(ChangeSet changeSet) throws ConcurrencyException;
+    void persistChanges(ChangeSet changeSet)
+            throws ConcurrencyException, DuplicateCommitException;
     
 }

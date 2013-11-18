@@ -24,6 +24,7 @@ package org.jeeventstore.store;
 import org.jeeventstore.ConcurrencyException;
 import java.util.Iterator;
 import org.jeeventstore.ChangeSet;
+import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.EventStoreCommitNotifier;
 import org.jeeventstore.EventStorePersistence;
 
@@ -61,7 +62,8 @@ public class NotifyingPersistenceDecorator implements EventStorePersistence {
     }
 
     @Override
-    public void persistChanges(ChangeSet changeSet) throws ConcurrencyException {
+    public void persistChanges(ChangeSet changeSet) 
+            throws ConcurrencyException, DuplicateCommitException {
         persistence.persistChanges(changeSet);
         notifier.notifyListeners(changeSet);
     }

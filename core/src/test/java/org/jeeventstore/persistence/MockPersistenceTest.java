@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import org.jeeventstore.ChangeSet;
 import org.jeeventstore.ConcurrencyException;
+import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.store.DefaultChangeSet;
 import org.jeeventstore.store.TestUtils;
 import static org.junit.Assert.*;
@@ -27,7 +28,7 @@ public class MockPersistenceTest {
         try {
             for (ChangeSet cs : data)
                 persistence.persistChanges(cs);
-        } catch (ConcurrencyException e) {
+        } catch (ConcurrencyException | DuplicateCommitException e) {
             throw new RuntimeException(e);
         }
     }
@@ -77,7 +78,7 @@ public class MockPersistenceTest {
     }
 
     @Test
-    private void testConcurrencyFailure() {
+    private void testConcurrencyFailure() throws DuplicateCommitException {
         List<Integer> data = TestUtils.randomdata(10);
         ChangeSet cs = new DefaultChangeSet("", "", 100, UUID.randomUUID(), data);
         try {

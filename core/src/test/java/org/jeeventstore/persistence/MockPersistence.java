@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.jeeventstore.ChangeSet;
 import org.jeeventstore.ConcurrencyException;
+import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.EventStorePersistence;
 import org.jeeventstore.store.TestChangeSet;
 
@@ -39,7 +40,8 @@ public class MockPersistence implements EventStorePersistence {
     }
 
     @Override
-    public void persistChanges(ChangeSet changeSet) throws ConcurrencyException {
+    public void persistChanges(ChangeSet changeSet) 
+            throws ConcurrencyException, DuplicateCommitException {
         if (RESET.equals(changeSet.bucketId())) {
             this.cleanup();
             return;

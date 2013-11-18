@@ -27,7 +27,7 @@ package org.jeeventstore;
  * 
  * @author Alexander Langer
  */
-public class ConcurrencyException extends EventStoreException {
+public class ConcurrencyException extends Exception {
 
     public ConcurrencyException() {
     }

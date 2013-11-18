@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.jeeventstore.ChangeSet;
+import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.EventStoreCommitListener;
 import org.jeeventstore.EventStoreCommitNotifier;
 import org.jeeventstore.EventStorePersistence;
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 /**
@@ -58,7 +58,7 @@ public class NotifyingPersistenceDecoratorTest implements EventStorePersistence 
     }
 
     @Test
-    public void test_persistChanges() {
+    public void test_persistChanges() throws DuplicateCommitException {
         NotifyingPersistenceDecorator decorator = new NotifyingPersistenceDecorator(
                 this, new TestNotifier());
         assertNull(this.persistedChangeset);
@@ -72,7 +72,7 @@ public class NotifyingPersistenceDecoratorTest implements EventStorePersistence 
     }
 
     @Test
-    public void test_no_notification_on_exception() {
+    public void test_no_notification_on_exception() throws DuplicateCommitException {
         NotifyingPersistenceDecorator decorator = new NotifyingPersistenceDecorator(
                 this, new TestNotifier());
         assertNull(this.persistedChangeset);

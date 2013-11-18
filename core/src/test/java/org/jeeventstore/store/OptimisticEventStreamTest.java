@@ -38,7 +38,7 @@ public class OptimisticEventStreamTest {
         try {
             for (ChangeSet cs : data)
                 persistence.persistChanges(cs);
-        } catch (ConcurrencyException e) {
+        } catch (ConcurrencyException | DuplicateCommitException e) {
             throw new RuntimeException(e);
         }
     }
@@ -101,7 +101,7 @@ public class OptimisticEventStreamTest {
         for(ChangeSet cs: invalid) {
             try {
                 persistence.persistChanges(cs);
-            } catch (ConcurrencyException e) {
+            } catch (ConcurrencyException | DuplicateCommitException e) {
                 // ignore on purpose, since we aim for a broken persistence
             }
         }
