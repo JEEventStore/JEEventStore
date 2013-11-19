@@ -14,13 +14,6 @@ import org.testng.annotations.Test;
  */
 public class JavaSerializerTest {
 
-    private final static String RESULT 
-            = "ACED0005737200136A6176612E7574696C2E41727261794C6973747881D21D"
-            + "99C7619D03000149000473697A6578700000000277040000000274000C4865"
-            + "6C6C6F2C20576F726C647372000E6A6176612E6C616E672E4C6F6E673B8BE4"
-            + "90CC8F23DF0200014A000576616C7565787200106A6176612E6C616E672E4E"
-            + "756D62657286AC951D0B94E08B0200007870000000000000303978";
-
     private List<Serializable> data() {
         List<Serializable> list = new ArrayList<>();
         list.add("Hello, World");
@@ -30,17 +23,12 @@ public class JavaSerializerTest {
 
     @Test
     public void test_serialize() throws Exception {
-        EventSerializer ms = new JavaSerializer();
+        EventSerializer sms = new JavaSerializer();
         List<? extends Serializable> list = data();
-        String res = ms.serialize(list);
-        Assert.assertEquals(res, RESULT);
-    }
+        String res = sms.serialize(list);
 
-    @Test
-    public void test_deserialize() throws Exception {
-        EventSerializer ms = new JavaSerializer();
-        List<? extends Serializable> list = data();
-        List reconstructed = ms.deserialize(RESULT);
+        EventSerializer dms = new JavaSerializer();
+        List reconstructed = dms.deserialize(res);
         Assert.assertEquals(reconstructed, list);
     }
     
