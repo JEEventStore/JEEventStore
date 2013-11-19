@@ -9,7 +9,7 @@ import org.jeeventstore.ConcurrencyException;
 import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.store.DefaultChangeSet;
 import org.jeeventstore.store.TestUtils;
-import static org.junit.Assert.*;
+import static org.testng.Assert.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

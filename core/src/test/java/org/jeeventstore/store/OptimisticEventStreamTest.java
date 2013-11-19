@@ -13,7 +13,7 @@ import org.jeeventstore.EventStorePersistence;
 import org.jeeventstore.ConcurrencyException;
 import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.util.IteratorUtils;
-import static org.junit.Assert.*;
+import static org.testng.Assert.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
