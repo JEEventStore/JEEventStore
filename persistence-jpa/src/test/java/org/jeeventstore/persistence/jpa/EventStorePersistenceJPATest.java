@@ -34,6 +34,7 @@ public class EventStorePersistenceJPATest extends AbstractPersistenceTest {
                         "ejb-jar.xml")
                 .addClass(JavaSerializer.class)
                 .addClass(PersistenceTestHelper.class)
+                .addPackage(AbstractPersistenceTest.class.getPackage())
                 .addPackage(EventStorePersistenceJPA.class.getPackage())
                 );
         return ear;
