@@ -29,6 +29,13 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.jeeventstore</groupId>
+            <artifactId>jeeventstore-testhelpers</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

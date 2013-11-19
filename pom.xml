@@ -15,7 +15,7 @@
         <module>testhelpers</module>
         <module>core</module>
         <module>serial-gson</module>
-        <!--module>persistence-jpa</module-->
+        <module>persistence-jpa</module>
     </modules>
 
     <properties>
@@ -264,7 +264,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <systemPropertyVariables>
-                                <!--arquillian.launch>glassfish-embedded</arquillian.launch-->
+                                <arquillian.launch>glassfish-embedded</arquillian.launch>
                                 <java.util.logging.config.file>
                                     ${basedir}/src/test/resources/customlogging.properties
                                 </java.util.logging.config.file>

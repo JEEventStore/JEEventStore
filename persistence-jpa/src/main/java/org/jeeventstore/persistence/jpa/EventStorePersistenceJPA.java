@@ -1,17 +1,25 @@
 package org.jeeventstore.persistence.jpa;
 
+import java.io.Serializable;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.transaction.TransactionRolledbackException;
 import org.jeeventstore.ChangeSet;
 import org.jeeventstore.ConcurrencyException;
+import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.EventStorePersistence;
 import org.jeeventstore.EventSerializer;
 
@@ -23,117 +31,111 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
 
     private static final Logger log = Logger.getLogger(EventStorePersistenceJPA.class.getName());
  
-    // to be injected by bean
+    // injected by deployment descriptor
     private EntityManager entityManager;
 
-    @EJB
+    @EJB(name="serializer")
     private EventSerializer serializer;
+    
+    @Resource(name="fetchBatchSize")
+    private Integer fetchBatchSize = 100;
 
-    @PostConstruct
-    public void init() {
-        System.out.println("############# EM = " + entityManager);
+    @Override
+    @TransactionAttribute(TransactionAttributeType.MANDATORY)
+    public Iterator<ChangeSet> allChanges(final String bucketId) {
+        if (bucketId == null)
+            throw new IllegalArgumentException("bucketId must not be null");
+        return fetchResults(new CriteriaQueryBuilder() {
+            @Override
+            public void addPredicates(CriteriaBuilder builder,
+                    CriteriaQuery<?> query, Root<EventStoreEntry> root) {
+                query.where(builder.equal(root.get(EventStoreEntry_.bucketId), bucketId));
+            }
+            @Override
+            public void addOrderBy(CriteriaBuilder builder,
+                    CriteriaQuery<?> query, Root<EventStoreEntry> root) {
+                query.orderBy(
+                        builder.asc(root.get(EventStoreEntry_.streamVersion)),
+                        builder.asc(root.get(EventStoreEntry_.id)));
+            }
+        });
     }
 
-//
-//    @Override
-//    public Iterator<PersistedChangeSet> allChanges() {
-//        List<JPAEventStoreEntry> results = persistenceContextProvider
-//                .entityManager()
-//                .createQuery("FROM "+JPAEventStoreEntry.class.getCanonicalName()+" e ORDER BY e.id",
-//                    JPAEventStoreEntry.class)
-//                .getResultList();
-//        return Collections.unmodifiableList(this.buildList(results)).iterator();
-//    }
-//
-//    @Override
-//    public Iterator<PersistedChangeSet> getChangesInStream(
-//            String bucketId,
-//            String streamId,
-//            long minVersion,
-//            long maxVersion) {
-//
-//        List<JPAEventStoreEntry> results = persistenceContextProvider
-//                .entityManager()
-//                .createQuery("FROM "+JPAEventStoreEntry.class.getCanonicalName()+" e WHERE " +
-//                    "e.bucketId = :bucketId AND " +
-//                    "e.streamId = :streamId AND " +
-//                    "e.streamVersion >= :minVersion AND " + 
-//                    "e.streamVersion <= :maxVersion " + 
-//                    "ORDER BY e.id", JPAEventStoreEntry.class)
-//                .setParameter("bucketId", bucketId)
-//                .setParameter("streamId", streamId)
-//                .setParameter("minVersion", minVersion)
-//                .setParameter("maxVersion", maxVersion)
-//                .getResultList();
-//        return Collections.unmodifiableList(this.buildList(results)).iterator();
-//    }
-//
-//    private List<PersistedChangeSet> buildList(List<JPAEventStoreEntry> results) {
-//        List<PersistedChangeSet> sets = new ArrayList<>();
-//        for (JPAEventStoreEntry entry: results) {
-//                List<EventMessage> messages = serializer.deserialize(entry.body());
-//            sets.add(new StoredChangeSet(
-//                    entry.bucketId(),
-//                    entry.streamId(),
-//                    entry.streamVersion(),
-//                    UUID.fromString(entry.changeSetId()),
-//                    entry.persistedAt(),
-//                    messages));
-//        }
-//        return sets;
-//    }
-//
-//    @Override
-//    public void persistChanges(PersistableChangeSet changes) {
-//	Validate.notNull(changes, "change must not be null");
-//        String body = serializer.serialize(changes.events());
-//	log.fine("writing " + changes.changeSetId() + ": " + body);
-//        JPAEventStoreEntry entry = new JPAEventStoreEntry(
-//                changes.bucketId(),
-//                changes.streamId(),
-//                changes.streamVersion() + 1,
-//                System.currentTimeMillis(),
-//                changes.changeSetId().toString(),
-//                body);
-//        persistenceContextProvider.entityManager().persist(entry);
-//        log.info("wrote " + changes.changeSetId() + " to event store, has number #" + entry.id());
-//    }
-//
-//    private Long queryCurrentStreamVersion(String bucketId, String streamId) {
-//        return persistenceContextProvider
-//                .entityManager()
-//		.createQuery("SELECT MAX(e.streamVersion) FROM EventStoreJPAEntry e WHERE " +
-//                    "e.bucketId = :bucketId AND " +
-//                    "e.streamId = :streamId", Long.class)
-//                .setParameter("bucketId", bucketId)
-//                .setParameter("streamId", streamId)
-//		.getSingleResult();
-//    }
-//
-//    @Override
-//    public boolean existsStream(String bucketId, String streamId) {
-//        Long current = queryCurrentStreamVersion(bucketId, streamId);
-//        return current != null;
-//    }
+    @Override
+    @TransactionAttribute(TransactionAttributeType.MANDATORY)
+    public Iterator<ChangeSet> getFrom(
+            final String bucketId, final String streamId,
+            final long minVersion, final long maxVersion) {
+        
+        if (bucketId == null)
+            throw new IllegalArgumentException("bucketId must not be null");
+        if (streamId == null)
+            throw new IllegalArgumentException("streamId must not be null");
+
+        return fetchResults(streamQueryBuilder(bucketId, streamId, minVersion, maxVersion));
+    }
 
     @Override
     public boolean existsStream(String bucketId, String streamId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (bucketId == null)
+            throw new IllegalArgumentException("bucketId must not be null");
+        if (streamId == null)
+            throw new IllegalArgumentException("streamId must not be null");
+
+        CriteriaQueryBuilder cqb = streamQueryBuilder(bucketId, streamId, 0, Long.MAX_VALUE);
+        return QueryUtils.countResults(entityManager, cqb) > 0;
     }
 
     @Override
-    public Iterator<ChangeSet> allChanges() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void persistChanges(ChangeSet changeSet) throws ConcurrencyException, DuplicateCommitException {
+        if (changeSet == null)
+            throw new IllegalArgumentException("changeSet must not be null");
+
+        List<Serializable> list = new ArrayList<>();
+        Iterator<Serializable> it = changeSet.events();
+        while (it.hasNext())
+            list.add(it.next());
+
+        String body = serializer.serialize(list);
+	log.log(Level.FINE, "writing {0}: {1}",
+                new Object[]{changeSet.changeSetId(), body});
+        EventStoreEntry entry = new EventStoreEntry(
+                changeSet.bucketId(),
+                changeSet.streamId(),
+                changeSet.streamVersion(), 
+                System.currentTimeMillis(),
+                changeSet.changeSetId().toString(),
+                body);
+        entityManager.persist(entry);
+        log.log(Level.INFO, "wrote ChangeSet {0} to event store, has id #{1}",
+                new Object[]{changeSet.changeSetId(), Long.toString(entry.id())});
     }
 
-    @Override
-    public Iterator<ChangeSet> getFrom(String bucketId, String streamId, long minVersion, long maxVersion) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private CriteriaQueryBuilder streamQueryBuilder(
+            final String bucketId, final String streamId,
+            final long minVersion, final long maxVersion) {
+
+        return new CriteriaQueryBuilder() {
+            @Override
+            public void addPredicates(CriteriaBuilder builder,
+                    CriteriaQuery<?> query, Root<EventStoreEntry> root) {
+                Predicate matchingBucketId = builder.equal(root.get(EventStoreEntry_.bucketId), bucketId);
+                Predicate matchingStreamId = builder.equal(root.get(EventStoreEntry_.streamId), streamId);
+                Predicate versionGt = builder.gt(root.get(EventStoreEntry_.streamVersion), minVersion);
+                Predicate versionLet = builder.le(root.get(EventStoreEntry_.streamVersion), maxVersion);
+                query.where(builder.and(matchingBucketId, matchingStreamId, versionGt, versionLet));
+            }
+            @Override
+            public void addOrderBy(CriteriaBuilder builder,
+                    CriteriaQuery<?> query, Root<EventStoreEntry> root) {
+                query.orderBy(builder.asc(root.get(EventStoreEntry_.streamVersion)));
+            }
+        };
     }
 
-    @Override
-    public void persistChanges(ChangeSet changeSet) throws ConcurrencyException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private Iterator<ChangeSet> fetchResults(CriteriaQueryBuilder cqb) {
+        return new LazyLoadIterator(entityManager, cqb, serializer)
+                .setFetchBatchSize(fetchBatchSize);
     }
 
 }

@@ -1,11 +1,17 @@
 package org.jeeventstore.persistence.jpa;
 
+import org.jeeventstore.persistence.PersistenceTestHelper;
 import java.io.File;
+import javax.ejb.EJB;
+import javax.ejb.EJBTransactionRequiredException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jeeventstore.EventStorePersistence;
+import org.jeeventstore.persistence.AbstractPersistenceTest;
+import org.jeeventstore.serialization.JavaSerializer;
 import org.jeeventstore.tests.DefaultDeployment;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
@@ -14,27 +20,39 @@ import org.testng.annotations.Test;
  *
  * @author Alexander Langer
  */
-public class EventStorePersistenceJPATest extends Arquillian {
+public class EventStorePersistenceJPATest extends AbstractPersistenceTest {
 
     @Deployment
     public static EnterpriseArchive deployment() {
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear");
         DefaultDeployment.addDependencies(ear, "org.jeeventstore:jeeventstore-persistence-jpa", false);
-        DefaultDeployment.addDependencies(ear, "org.jeeventstore:ntstore-serialization-gson", true);
         ear.addAsModule(ShrinkWrap.create(JavaArchive.class, "ejb.jar")
                 .addAsManifestResource(new File("src/test/resources/META-INF/beans.xml"))
                 .addAsManifestResource(new File("src/test/resources/META-INF/persistence.xml"))
                 .addAsManifestResource(new File(
                         "src/test/resources/META-INF/ejb-jar-EventStorePersistenceJPATest.xml"),
                         "ejb-jar.xml")
+                .addClass(JavaSerializer.class)
+                .addClass(PersistenceTestHelper.class)
                 .addPackage(EventStorePersistenceJPA.class.getPackage())
                 );
         return ear;
     }
 
     @Test
-    public void test_it() {
-        System.out.println("ding dong");
+    public void test_transaction_required() {
+        try {
+            getPersistence().allChanges("TEST");
+            fail("Should have failed by now");
+        } catch (EJBTransactionRequiredException e) {
+            // expected
+        }
+        try {
+            getPersistence().getFrom("TEST", "FOO", 0, 10l);
+            fail("Should have failed by now");
+        } catch (EJBTransactionRequiredException e) {
+            // expected
+        }
     }
-    
+
 }

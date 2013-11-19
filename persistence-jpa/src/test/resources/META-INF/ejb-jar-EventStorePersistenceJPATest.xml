@@ -7,22 +7,29 @@
 
     <enterprise-beans>    
 
-        <session>
+       <session>
             <ejb-name>EventSerializer</ejb-name>
-            <business-local>org.jeeventstore.core.serialization.EventSerializer</business-local>
-            <ejb-class>org.jeeventstore.serialization.gson.EventSerializerGson</ejb-class>
-
-hier jetzt einen mock serializer bauen, der vielleicht nur normales java serialize macht?
-
+            <business-local>org.jeeventstore.EventSerializer</business-local>
+            <ejb-class>org.jeeventstore.serialization.JavaSerializer</ejb-class>
             <session-type>Singleton</session-type>
             <init-on-startup>true</init-on-startup>
         </session>
 
         <session>
-            <ejb-name>EventStorePersistenceJPA</ejb-name>
-            <business-local>org.jeeventstore.core.persistence.EventStorePersistence</business-local>
+            <ejb-name>EventStorePersistence</ejb-name>
+            <business-local>org.jeeventstore.EventStorePersistence</business-local>
             <ejb-class>org.jeeventstore.persistence.jpa.EventStorePersistenceJPA</ejb-class>
             <session-type>Stateless</session-type>
+            <env-entry>
+                <env-entry-name>fetchBatchSize</env-entry-name>
+                <env-entry-type>java.lang.Integer</env-entry-type>
+                <env-entry-value>50</env-entry-value>
+            </env-entry>
+            <ejb-local-ref>
+                <ejb-ref-name>serializer</ejb-ref-name>
+                <local>org.jeeventstore.EventSerializer</local>
+                <ejb-link>EventSerializer</ejb-link>
+            </ejb-local-ref>
             <persistence-context-ref>
                 <persistence-context-ref-name>entityManager</persistence-context-ref-name>
                 <persistence-unit-name>TestPU</persistence-unit-name>
