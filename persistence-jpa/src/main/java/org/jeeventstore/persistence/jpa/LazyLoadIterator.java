@@ -77,7 +77,7 @@ public class LazyLoadIterator implements Iterator<ChangeSet> {
     }
     
     private void fetch() {
-        log.log(Level.INFO, "Fetching results {0}-{1} of {2}",
+        log.log(Level.FINE, "Fetching results {0}-{1} of {2}",
                 new Object[]{
                     Integer.toString(current+1),
                     Long.toString(Math.min(numResults, fetchBatchSize * (current/fetchBatchSize + 1))),
