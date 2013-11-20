@@ -106,7 +106,8 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
                 body);
         entityManager.persist(entry);
         log.log(Level.FINE, "wrote ChangeSet {0} to event store, has id #{1}",
-                new Object[]{changeSet.changeSetId(), Long.toString(entry.id())});
+                new Object[]{changeSet.changeSetId(),
+                    Long.toString(entry.id() == null ? -1 : entry.id())});
     }
 
     private CriteriaQueryBuilder streamQueryBuilder(
