@@ -16,6 +16,7 @@
         <module>core</module>
         <module>serial-gson</module>
         <module>persistence-jpa</module>
+        <!--module>persistence-memory</module-->
     </modules>
 
     <properties>
@@ -29,6 +30,7 @@
         <version.shrinkwrap.resolver>2.0.0</version.shrinkwrap.resolver>
         <version.org.jboss.arquillian>1.1.1.Final</version.org.jboss.arquillian>
         <version.org.jboss.as>7.1.2.Final</version.org.jboss.as>
+        <glassfish.database>derby</glassfish.database>
         <tomee.version>1.5.2</tomee.version>
         <tomee.classifier>plus</tomee.classifier>
     </properties>
@@ -229,7 +231,6 @@
             </build>
         </profile>
 
-
         <profile>
             <!-- An optional Arquillian testing profile that executes tests 
             in an embedded Glassfish instance -->
@@ -256,6 +257,12 @@
                     <version>1.2.16</version>
                 </dependency>
 
+                <dependency>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                    <version>5.1.26</version>
+                </dependency> 
+
             </dependencies>
             <build>
                 <plugins>
@@ -265,6 +272,7 @@
                         <configuration>
                             <systemPropertyVariables>
                                 <arquillian.launch>glassfish-embedded</arquillian.launch>
+                                <glassfishDatabase>${glassfish.database}</glassfishDatabase>
                                 <java.util.logging.config.file>
                                     ${basedir}/src/test/resources/customlogging.properties
                                 </java.util.logging.config.file>
@@ -274,6 +282,8 @@
                 </plugins>
             </build>
         </profile>
+
+
 
         <profile>
             <!-- An optional Arquillian testing profile that executes tests 

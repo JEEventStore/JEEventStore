@@ -8,10 +8,9 @@
         <property name="deploymentExportPath">target/</property>
     </engine>
 
-    
     <container qualifier="glassfish-embedded">
         <configuration>
-            <property name="resourcesXml">src/test/resources/glassfish-resources.xml</property>
+            <property name="resourcesXml">src/test/resources/glassfish-resources-${glassfishDatabase}.xml</property>
         </configuration>
     </container>
 
