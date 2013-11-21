@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE resources PUBLIC
+        "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN"
+        "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
+<resources>
+
+    <jdbc-resource pool-name="ArquillianEmbeddedPostgreSQLPool"
+                   jndi-name="datasources/TestDS"/>
+    
+    <jdbc-connection-pool name="ArquillianEmbeddedPostgreSQLPool"
+                          datasource-classname="org.postgresql.ds.PGSimpleDataSource"
+                          res-type="javax.sql.DataSource">
+        <property name="serverName" value="localhost"></property>
+        <property name="dataBaseName" value="jeeventstore_test"></property>
+        <property name="User" value="postgres"></property>
+        <property name="Password" value=""></property>
+    </jdbc-connection-pool>
+
+</resources>

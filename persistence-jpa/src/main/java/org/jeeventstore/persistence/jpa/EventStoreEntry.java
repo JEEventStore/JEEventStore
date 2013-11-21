@@ -50,11 +50,7 @@ public class EventStoreEntry implements Serializable {
     @NotNull
     private String changeSetId;
 
-    // must use columnDefinition = TEXT, because @Lob will cause Hibernate to
-    // create a somewhat broken binary (=ascii-only) column (OID)
-    // in Postgres, which leads to broken UTF8 encodings
-    @Column(name = "body") // , columnDefinition = "TEXT")
-    @Lob
+    @Column(name = "body")
     @NotNull
     private String body;
 

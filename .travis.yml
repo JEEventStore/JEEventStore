@@ -6,9 +6,10 @@ env:
   matrix:
     - MAVEN_PROFILE=arq-glassfish-embedded TEST_DATABASE=derby
     - MAVEN_PROFILE=arq-glassfish-embedded TEST_DATABASE=travis-mysql
+    - MAVEN_PROFILE=arq-glassfish-embedded TEST_DATABASE=travis-postgres
 
 before_script:
-  - mysql -e 'create database jeeventstore_test;'
+  - bash testutils/create_tables.sh
 
 script: "mvn clean install test-compile surefire:test -P${MAVEN_PROFILE}"
 
