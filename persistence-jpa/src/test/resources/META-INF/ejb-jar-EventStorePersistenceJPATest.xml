@@ -10,7 +10,7 @@
        <session>
             <ejb-name>EventSerializer</ejb-name>
             <business-local>org.jeeventstore.EventSerializer</business-local>
-            <ejb-class>org.jeeventstore.serialization.JavaSerializer</ejb-class>
+            <ejb-class>org.jeeventstore.serialization.XMLSerializer</ejb-class>
             <session-type>Singleton</session-type>
             <init-on-startup>true</init-on-startup>
         </session>

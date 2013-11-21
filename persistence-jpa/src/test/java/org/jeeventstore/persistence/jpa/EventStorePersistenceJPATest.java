@@ -2,16 +2,14 @@ package org.jeeventstore.persistence.jpa;
 
 import org.jeeventstore.persistence.PersistenceTestHelper;
 import java.io.File;
-import javax.ejb.EJB;
 import javax.ejb.EJBTransactionRequiredException;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jeeventstore.EventStorePersistence;
+import org.jeeventstore.TestUTF8Utils;
 import org.jeeventstore.persistence.AbstractPersistenceTest;
-import org.jeeventstore.serialization.JavaSerializer;
+import org.jeeventstore.serialization.XMLSerializer;
 import org.jeeventstore.tests.DefaultDeployment;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
@@ -32,7 +30,8 @@ public class EventStorePersistenceJPATest extends AbstractPersistenceTest {
                 .addAsManifestResource(new File(
                         "src/test/resources/META-INF/ejb-jar-EventStorePersistenceJPATest.xml"),
                         "ejb-jar.xml")
-                .addClass(JavaSerializer.class)
+                .addClass(XMLSerializer.class)
+                .addClass(TestUTF8Utils.class)
                 .addClass(PersistenceTestHelper.class)
                 .addPackage(AbstractPersistenceTest.class.getPackage())
                 .addPackage(EventStorePersistenceJPA.class.getPackage())
