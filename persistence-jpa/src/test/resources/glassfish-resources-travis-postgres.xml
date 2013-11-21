@@ -8,8 +8,8 @@
                    jndi-name="datasources/TestDS"/>
     
     <jdbc-connection-pool name="ArquillianEmbeddedPostgreSQLPool"
-                          datasource-classname="org.postgresql.ds.PGSimpleDataSource"
-                          res-type="javax.sql.DataSource">
+                          res-type="javax.sql.DataSource"
+                          datasource-classname="org.postgresql.ds.PGSimpleDataSource">
         <property name="serverName" value="localhost"></property>
         <property name="dataBaseName" value="jeeventstore_test"></property>
         <property name="User" value="postgres"></property>
