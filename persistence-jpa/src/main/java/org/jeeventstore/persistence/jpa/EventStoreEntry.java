@@ -73,10 +73,14 @@ public class EventStoreEntry implements Serializable {
             String changeSetId,
             String body) {
 
-        //Validate.notEmpty(bucketId, "bucketId must not be empty");
-        //Validate.notEmpty(streamId, "streamId must not be empty");
-        //Validate.notEmpty(changeSetId, "changeSetId must not be empty");
-        //Validate.notEmpty(body, "body must not be empty");
+        if (bucketId == null || bucketId.isEmpty())
+            throw new IllegalArgumentException("bucketId must not be empty");
+        if (streamId == null || streamId.isEmpty())
+            throw new IllegalArgumentException("streamId must not be empty");
+        if (changeSetId == null || changeSetId.isEmpty())
+            throw new IllegalArgumentException("changeSetId must not be empty");
+        if (body == null || body.isEmpty())
+            throw new IllegalArgumentException("body must not be empty");
 
         this.bucketId = bucketId;
         this.streamId = streamId;
