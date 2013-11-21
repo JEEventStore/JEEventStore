@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -50,8 +49,15 @@ public class EventStoreEntry implements Serializable {
     @NotNull
     private String changeSetId;
 
-    @Column(name = "body")
-    @NotNull
+    // cannot use @Lob due bug in Hibernate/Postgres combination, which both
+    // sides refuse to fix, see
+    // https://groups.google.com/forum/#!topic/pgsql.interfaces.jdbc/g4XXAL-a5tE
+    // http://in.relation.to/15492.lace
+    // https://hibernate.atlassian.net/browse/HHH-6127
+    // we therefore fix the length at 32,672 , which is the maximum VARCHAR
+    // size in Apache Derby.  In production, use an existing table in your DB
+    // with the correct type set
+    @Column(name = "body", length = 32672)
     private String body;
 
     public EventStoreEntry(
