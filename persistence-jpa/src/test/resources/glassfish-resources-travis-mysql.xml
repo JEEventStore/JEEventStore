@@ -9,17 +9,12 @@
     
     <jdbc-connection-pool name="ArquillianEmbeddedMySQLPool"
                           res-type="javax.sql.DataSource"
-                          datasource-classname="com.mysql.jdbc.jdbc2.optional.MysqlDataSource"
-                          pool-resize-quantity="1"
-                          max-pool-size="5"
-                          steady-pool-size="0"
-                          statement-timeout-in-seconds="30" 
-                          is-isolation-level-guaranteed="false">
+                          datasource-classname="com.mysql.jdbc.jdbc2.optional.MysqlDataSource">
         <property name="serverName" value="localhost"></property>
         <property name="portNumber" value="3306"></property>
+        <property name="dataBaseName" value="jeeventstore_test"></property>
         <property name="User" value="travis"></property>
         <property name="Password" value=""></property>
-        <property name="dataBaseName" value="jeeventstore_test"></property>
     </jdbc-connection-pool>
 
 </resources>
