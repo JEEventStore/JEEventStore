@@ -6,12 +6,12 @@
     <properties>
       <property name="hibernate.show_sql" value="false"/>
       <property name="hibernate.format_sql" value="true"/>
-      <property name="hibernate.hbm2ddl.auto" value="create"/>
-      <!--property name="hibernate.hbm2ddl.auto" value="validate"/-->
+      <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+      <property name="hibernate.connection.charSet" value="UTF-8"/>
       <property name="eclipselink.logging.level" value="FINE"/>
       <property name="eclipselink.logging.level.sql" value="FINE"/>
       <property name="eclipselink.logging.parameters" value="true"/>
-      <property name="eclipselink.ddl-generation" value="create-tables"/>
+      <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
     </properties>
   </persistence-unit>
 </persistence>

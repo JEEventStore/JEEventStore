@@ -183,7 +183,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <maven.test.skip>true</maven.test.skip>
+                <skipTests>true</skipTests>
             </properties>
             <dependencies>
                 <dependency>

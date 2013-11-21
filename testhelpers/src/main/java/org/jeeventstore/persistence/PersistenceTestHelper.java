@@ -108,9 +108,6 @@ public class PersistenceTestHelper {
         compare(have, expected, true);
     }
 
- 
-    // null arguments test fuer alle funktionen, muessen IllegalArgumentException werfen
-    
     public void test_allChanges_nullarg() {
         try {
             persistence.allChanges(null);
@@ -133,7 +130,12 @@ public class PersistenceTestHelper {
         } catch (EJBException e) {
             // expected
         }
+    }
 
+    public List<ChangeSet> getFrom(String bucketId, String streamId) {
+        assertTrue(persistence.existsStream(bucketId, streamId));
+        Iterator<ChangeSet> it = persistence.getFrom(bucketId, streamId, 0, Long.MAX_VALUE);
+        return IteratorUtils.toList(it);
     }
 
     private List<ChangeSet> filter(String bucketId, String streamId, long minVersion, long maxVersion) {
