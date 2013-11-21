@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "CREATING DATABASES"
+
 mysql -e 'CREATE DATABASE jeeventstore_test;'
 (echo 'USE jeeventstore_test;'; cat ./persistence-jpa/src/main/sql/mysql.sql) | mysql
 mysql -e 'USE jeeventstore_test; TRUNCATE TABLE jeeventstore_test.event_store;'
