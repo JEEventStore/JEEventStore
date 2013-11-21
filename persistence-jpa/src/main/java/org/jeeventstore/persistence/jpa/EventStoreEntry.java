@@ -49,14 +49,19 @@ public class EventStoreEntry implements Serializable {
     @NotNull
     private String changeSetId;
 
-    // cannot use @Lob due bug in Hibernate/Postgres combination, which both
-    // sides refuse to fix, see
-    // https://groups.google.com/forum/#!topic/pgsql.interfaces.jdbc/g4XXAL-a5tE
-    // http://in.relation.to/15492.lace
-    // https://hibernate.atlassian.net/browse/HHH-6127
-    // we therefore fix the length at 32,672 , which is the maximum VARCHAR
-    // size in Apache Derby.  In production, use an existing table in your DB
-    // with the correct type set
+    /*
+     * We cannot use @Lob, because it will cause Hibernate to map the field
+     * in ascii-only mode when used with PostreSQL, which leads to broken
+     * UTF8 Strings.  Both parties refuse to fix this isse, see
+     * https://groups.google.com/forum/#!topic/pgsql.interfaces.jdbc/g4XXAL-a5tE
+     * http://in.relation.to/15492.lace
+     * https://hibernate.atlassian.net/browse/HHH-6127
+     *
+     * We therefore fix the length at 32,672 , which is the maximum VARCHAR
+     * size in Apache Derby, the database used for unit tests.  In production
+     * mode you are expected to manually create the table with the correct
+     * length and field types.  See src/main/sql/*.sql for table definitions.
+     */
     @Column(name = "body", length = 32672)
     private String body;
 
