@@ -22,26 +22,31 @@
 package org.jeeventstore;
 
 /**
- * A VersionedEventStream belongs to a bucket, has a unique
- * identifier within the bucket and a version number.
+ * Common denominator to all event streams.
  * 
- * @author Alexander Langer
+ * A VersionedEventStream belongs to a bucket, has a unique
+ * identifier within this bucket and a version number.
  */
 public interface VersionedEventStream {
 
     /**
      * Identifies the bucket to which the EventStream belongs.
-     * @return 
+     * 
+     * @return  the id of the bucket
      */
     String bucketId();
 
     /**
      * Identifies the EventStream within the bucket.
+     * 
+     * @return  the id of the stream
      */
     String streamId();
 
     /**
      * The version of the EventStream.
+     * 
+     * @return  the version 
      */
     long version();
 
