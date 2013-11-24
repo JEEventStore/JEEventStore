@@ -70,6 +70,8 @@ public class EventSerializerGson implements EventSerializer {
     @Override
     @Lock(LockType.READ)
     public String serialize(List<? extends Serializable> events) {
+        if (events == null)
+            throw new IllegalArgumentException("events must not be null");
         EventList evlist = new EventList(events);
         return gson.toJson(evlist);
     }
@@ -77,6 +79,8 @@ public class EventSerializerGson implements EventSerializer {
     @Override
     @Lock(LockType.READ)
     public List<? extends Serializable> deserialize(String body) {
+        if (body == null)
+            throw new IllegalArgumentException("body must not be null");
         return this.gson.fromJson(body, EventList.class).events();
     }
 
