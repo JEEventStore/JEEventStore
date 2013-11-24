@@ -31,8 +31,6 @@ import org.jeeventstore.ChangeSet;
 
 /**
  * Default implementation of a change set.
- * 
- * @author Alexander Langer
  */
 public class DefaultChangeSet implements ChangeSet {
 
@@ -48,6 +46,18 @@ public class DefaultChangeSet implements ChangeSet {
             long streamVersion,
             UUID changeSetId,
             List<? extends Serializable> events) {
+
+        if (bucketId == null)
+            throw new NullPointerException("bucketId must not be null");
+        if (streamId == null)
+            throw new NullPointerException("streamId must not be null");
+        if (streamVersion < 0)
+            throw new IllegalArgumentException("streamVersion must not be negative");
+        if (changeSetId == null)
+            throw new NullPointerException("changeSetId must not be null");
+        if (events == null)
+            throw new NullPointerException("events must not be null");
+
         this.bucketId = bucketId;
         this.streamId = streamId;
         this.streamVersion = streamVersion;
