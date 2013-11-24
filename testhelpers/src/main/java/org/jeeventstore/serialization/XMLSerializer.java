@@ -31,7 +31,8 @@ import java.util.List;
 import org.jeeventstore.EventSerializer;
 
 /**
- *
+ * A simple serializer that serializes to XML using the {@link java.beans.XMLEncoder}/XMLDecoder API.
+ * 
  * @author Alexander Langer
  */
 public class XMLSerializer implements EventSerializer {
