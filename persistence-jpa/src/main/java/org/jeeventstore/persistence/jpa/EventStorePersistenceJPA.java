@@ -87,9 +87,7 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
             @Override
             public void addOrderBy(CriteriaBuilder builder,
                     CriteriaQuery<?> query, Root<EventStoreEntry> root) {
-                query.orderBy(
-                        builder.asc(root.get(EventStoreEntry_.streamVersion)),
-                        builder.asc(root.get(EventStoreEntry_.id)));
+                query.orderBy(builder.asc(root.get(EventStoreEntry_.id)));
             }
         });
     }
