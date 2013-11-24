@@ -28,11 +28,19 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 /**
- *
- * @author Alexander Langer
+ * Utility functions for use with the JPA {@link CriteriaQuery} API.
  */
-public class QueryUtils {
+class QueryUtils {
 
+    /**
+     * Create a new query for fetching objects from the database.
+     * Uses {@link CriteriaQueryBuilder#addPredicates} and
+     * {@link CriteriaQueryBuilder#addOrderBy}
+     * 
+     * @param entityManager  the {@link EntityManager} that manages the {@link EventStoreEntry} entity
+     * @param cqb  the criteria query builder
+     * @return  the built query, ready for retrieving results
+     */
     public static TypedQuery<EventStoreEntry> buildQuery(
             EntityManager entityManager,
             CriteriaQueryBuilder cqb) {
@@ -46,6 +54,16 @@ public class QueryUtils {
         return entityManager.createQuery(query);
     }
 
+    /**
+     * Counts the number of entities (rows) matching the criteria specified
+     * in the given {@link CriteriaQueryBuilder}.
+     * Uses {@link CriteriaQueryBuilder#addPredicates} only.
+     * 
+     * @param entityManager  the {@link EntityManager} used to count the number
+     *      of matching {@link EventStoreEntry} entities
+     * @param cqb  the criteria query builder
+     * @return  the number of entities that matched the criteria
+     */
     public static Long countResults(EntityManager entityManager, CriteriaQueryBuilder cqb) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);

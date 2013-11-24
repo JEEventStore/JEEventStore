@@ -33,18 +33,17 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 /**
- * JPA EventStore Entry.
- * @author alex
+ * JPA EventStore entry.
  */
 @Entity
 @Table(name = "event_store", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"bucket_id", "stream_id", "stream_version"}),
-    @UniqueConstraint(columnNames = {"change_set_id"})
+    @UniqueConstraint(columnNames = {"bucket_id", "change_set_id"})
 })
 public class EventStoreEntry implements Serializable {
 
     /**
-     * ID of the entry.  Can be used to enumerate ALL Events.
+     * Internal database ID of the entry.  Can be used to enumerate all events.
      */
     @SequenceGenerator(name="event_store_id_seq", sequenceName="event_store_id_seq", allocationSize=1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="event_store_id_seq")
@@ -73,7 +72,7 @@ public class EventStoreEntry implements Serializable {
     /*
      * We cannot use @Lob, because it will cause Hibernate to map the field
      * in ascii-only mode when used with PostreSQL, which leads to broken
-     * UTF8 Strings.  Both parties refuse to fix this isse, see
+     * UTF8 Strings.  Both parties refuse to fix this isse, see, e.g.,
      * https://groups.google.com/forum/#!topic/pgsql.interfaces.jdbc/g4XXAL-a5tE
      * http://in.relation.to/15492.lace
      * https://hibernate.atlassian.net/browse/HHH-6127
@@ -140,7 +139,7 @@ public class EventStoreEntry implements Serializable {
     }
 
     /**
-     * Required for JPA, do not use
+     * Required for JPA, do not use.
      * @deprecated 
      */
     @Deprecated

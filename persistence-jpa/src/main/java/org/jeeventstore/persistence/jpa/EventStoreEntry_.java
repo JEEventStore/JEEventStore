@@ -25,8 +25,8 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- *
- * @author Alexander Langer
+ * Static meta model for {@link EventStoreEntry} to be used with the JPA
+ * criteria API.
  */
 @StaticMetamodel(EventStoreEntry.class)
 public class EventStoreEntry_ {

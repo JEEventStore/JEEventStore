@@ -43,8 +43,22 @@ import org.jeeventstore.EventStorePersistence;
 import org.jeeventstore.EventSerializer;
 
 /**
- * EventStorePersistence utilizing JPA.  Stateless.
- * @author alex
+ * EventStorePersistence utilizing JPA.  
+ * To be configured as a stateless EJB.
+ * <p>
+ * See {@code src/main/sql/*.sql} for suitable table definitions.
+ * <p>
+ * The following EJBs and services are expected to be injected:
+ * <p>
+ * {@code serializer} of type {@link EventSerializer} denotes the serialization
+ *    strategy used to serialize objects before persisting them into the database
+ * <p>
+ * {@code entityManager} is the persistence context used to store events.
+ * <p>
+ * This EJB accepts the following configuration parameters:
+ * <p>
+ * Env-entry {@code fetchBatchSize} (optional, default: 500): The batch size for database fetches (number
+ *   of rows to be retrieved in a single call).
  */
 public class EventStorePersistenceJPA implements EventStorePersistence {
 
@@ -57,7 +71,7 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
     private EventSerializer serializer;
     
     @Resource(name="fetchBatchSize")
-    private Integer fetchBatchSize = 100;
+    private Integer fetchBatchSize = 500;
 
     @Override
     @TransactionAttribute(TransactionAttributeType.MANDATORY)

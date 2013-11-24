@@ -35,10 +35,11 @@ import org.jeeventstore.EventSerializer;
 import org.jeeventstore.store.DefaultChangeSet;
 
 /**
- *
- * @author Alexander Langer
+ * Provides the ability to load events from the EntityManager in batches.
+ * This avoids loading all events into memory at once, possibly consuming
+ * all heap space.
  */
-public class LazyLoadIterator implements Iterator<ChangeSet> {
+class LazyLoadIterator implements Iterator<ChangeSet> {
 
     private final static Logger log = Logger.getLogger(LazyLoadIterator.class.getName());
 
@@ -46,7 +47,7 @@ public class LazyLoadIterator implements Iterator<ChangeSet> {
     private final TypedQuery<EventStoreEntry> query;
     private final EventSerializer serializer;
     private final long numResults;
-    private int fetchBatchSize = 50;
+    private int fetchBatchSize = 500;
 
     private int current = 0;
     private final List<EventStoreEntry> currentBatch = new ArrayList<>(fetchBatchSize);
