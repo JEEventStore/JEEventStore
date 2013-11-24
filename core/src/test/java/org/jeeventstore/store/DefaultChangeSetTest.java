@@ -53,4 +53,44 @@ public class DefaultChangeSetTest {
         }
     }
 
+    @Test
+    public void test_invalid_args() {
+        try {
+            new DefaultChangeSet(null, STREAM_ID, STREAM_VERSION, CHANGE_SET_ID, EVENTS);
+            fail("Should have failed by now");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new DefaultChangeSet(BUCKET_ID, null, STREAM_VERSION, CHANGE_SET_ID, EVENTS);
+            fail("Should have failed by now");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new DefaultChangeSet(BUCKET_ID, STREAM_ID, -5, CHANGE_SET_ID, EVENTS);
+            fail("Should have failed by now");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        // must work
+        new DefaultChangeSet(BUCKET_ID, STREAM_ID, 0, CHANGE_SET_ID, EVENTS);
+
+        try {
+            new DefaultChangeSet(BUCKET_ID, STREAM_ID, STREAM_VERSION, null, EVENTS);
+            fail("Should have failed by now");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new DefaultChangeSet(BUCKET_ID, STREAM_ID, STREAM_VERSION, CHANGE_SET_ID, null);
+            fail("Should have failed by now");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+
+    }
+
 }
