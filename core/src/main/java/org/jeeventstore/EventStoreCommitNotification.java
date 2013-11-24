@@ -22,16 +22,14 @@
 package org.jeeventstore;
 
 /**
- * An EventStoreCommitNotification is used to inform interested
- * parties about changes that have been committed to the event store.
- * 
- * @author Alexander Langer
+ * A notification about changes that have been committed to the event store.
  */
 public interface EventStoreCommitNotification {
 
     /**
      * Returns the change set that has been committed to the event store.
-     * @return The committed ChangeSet
+     * 
+     * @return  the committed {@link ChangeSet}
      */
     ChangeSet changes();
     

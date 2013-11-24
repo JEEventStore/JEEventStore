@@ -26,20 +26,21 @@ import org.jeeventstore.ChangeSet;
 
 /**
  * Default implementation for a commit notification.
- * 
- * @author Alexander Langer
  */
 class DefaultCommitNotification implements EventStoreCommitNotification {
 
     private ChangeSet changes;
 
+    /**
+     * 
+     * @param changes  the changes that have been committed, not null
+     */
     public DefaultCommitNotification(ChangeSet changes) {
+        if (changes == null)
+            throw new IllegalArgumentException("changes must not be null");
         this.changes = changes;
     }
 
-    /**
-     * @see EventStoreCommitNotification#changes() 
-     */
     @Override
     public ChangeSet changes() {
         return this.changes;

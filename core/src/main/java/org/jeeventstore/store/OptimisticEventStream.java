@@ -21,6 +21,7 @@
 
 package org.jeeventstore.store;
 
+import org.jeeventstore.StreamNotFoundException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,11 +38,8 @@ import org.jeeventstore.ReadableEventStream;
 import org.jeeventstore.WritableEventStream;
 
 /**
- * An implementation of an event stream that uses optimistic locking.
- * The OptimisticEventStream is used for implementations of both,
- * readable and writable event streams.
- * 
- * @author Alexander Langer
+ * An event stream that uses optimistic locking.
+ * Supports reading and writing.
  */
 final class OptimisticEventStream 
         implements ReadWriteEventStream {
@@ -71,14 +69,35 @@ final class OptimisticEventStream
         this.persistence = persistence;
     }
 
+    /**
+     * Factory method to create a new writable event stream supporting optimistic locking.
+     * Does not query the persistence layer upon creation.
+     * 
+     * @param bucketId  the identifier of the bucket the stream belongs to
+     * @param streamId  the identifier of the stream
+     * @param version   the version of the stream
+     * @param persistence  the persistence layer to which changes are to be committed
+     * @return  the stream
+     */
     protected static WritableEventStream createWritable(
             String bucketId,
             String streamId, 
             long version,
             EventStorePersistence persistence) {
+        
         return new OptimisticEventStream(bucketId, streamId, version, persistence);
     }
 
+    /**
+     * Factory method to create a new read and writable event stream supporting optimistic locking.
+     * Queries the persistence layer upon creation to populate the stream
+     * 
+     * @param bucketId  the identifier of the bucket the stream belongs to
+     * @param streamId  the identifier of the stream
+     * @param version   the version of the stream
+     * @param persistence  the persistence layer to which changes are to be committed
+     * @return  the stream
+     */
     protected static ReadWriteEventStream createReadWritable(
             String bucketId,
             String streamId, 
@@ -92,6 +111,16 @@ final class OptimisticEventStream
         return oes;
     }
 
+    /**
+     * Factory method to create a new readable event stream.
+     * Queries the persistence layer upon creation to populate the stream.
+     * 
+     * @param bucketId  the identifier of the bucket the stream belongs to
+     * @param streamId  the identifier of the stream
+     * @param version   the version of the stream to be read
+     * @param persistence  the persistence layer to which changes are to be committed
+     * @return   the stream
+     */
     protected static ReadableEventStream createReadable(
             String bucketId,
             String streamId, 
@@ -134,6 +163,8 @@ final class OptimisticEventStream
     @Override
     public void commit(UUID commitId) 
             throws DuplicateCommitException, ConcurrencyException {
+        if (commitId == null)
+            throw new IllegalArgumentException("commitId must not be null");
         log.log(Level.FINE, "Attempting to commit changes: {0}", this.streamId);
         if (!hasChanges())
             return;
@@ -170,6 +201,12 @@ final class OptimisticEventStream
         this.appendedEvents.clear();
     }
 
+    /**
+     * Queries the persistence layer to populate the stream up until version
+     * {@code version}.
+     * 
+     * @param version  the maximum version to retrieve
+     */
     protected void populateToVersion(long version) {
         Iterator<ChangeSet> commits = persistence.getFrom(
                 bucketId, streamId, this.version, version);

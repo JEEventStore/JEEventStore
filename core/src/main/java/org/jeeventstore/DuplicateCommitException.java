@@ -24,8 +24,6 @@ package org.jeeventstore;
 /**
  * An exception that occurs when there is an attempt to commit the same
  * set of changes more than once.
- * 
- * @author Alexander Langer
  */
 public class DuplicateCommitException extends Exception {
 

@@ -1,5 +1,6 @@
 package org.jeeventstore.store;
 
+import org.jeeventstore.StreamNotFoundException;
 import org.jeeventstore.ConcurrencyException;
 import org.jeeventstore.EventStore;
 import org.jeeventstore.persistence.MockPersistence;
@@ -29,7 +30,7 @@ import org.jeeventstore.util.IteratorUtils;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
-public class EventStoreServiceTest extends Arquillian 
+public class OptimisticEventStoreServiceTest extends Arquillian 
     implements EventStoreCommitListener {
 
     // these must be static to have them set from different threads
@@ -48,12 +49,13 @@ public class EventStoreServiceTest extends Arquillian
                 .addAsModule(ShrinkWrap.create(JavaArchive.class, "ejb.jar")
                         .addAsManifestResource(new File("src/test/resources/META-INF/beans.xml"))
                         .addAsManifestResource(new File(
-                                "src/test/resources/META-INF/ejb-jar-EventStoreServiceTest.xml"),
+                                "src/test/resources/META-INF/ejb-jar-OptimisticEventStoreServiceTest.xml"),
                                 "ejb-jar.xml")
                         .addPackage(ChangeSet.class.getPackage())
                         .addPackage(EventStoreCommitNotifier.class.getPackage())
-                        .addPackage(EventStoreService.class.getPackage())
+                        .addPackage(OptimisticEventStoreService.class.getPackage())
                         .addPackage(SyncEventStoreCommitNotifier.class.getPackage())
+                        .addClass(IteratorUtils.class)
                         .addClass(MockPersistence.class)
                         .addClass(EventStorePersistence.class)
                 );

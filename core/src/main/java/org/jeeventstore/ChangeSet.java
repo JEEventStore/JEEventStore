@@ -26,38 +26,46 @@ import java.util.Iterator;
 import java.util.UUID;
 
 /**
- * A ChangeSet represents a series of events that form a single, consistent
- * unit within the given event stream. The events within a ChangeSet are
- * stored in an atomic operation: The events in a ChangeSet can either be
- * applied to the event stream as a whole, or none of the events are applied.
- * 
- * @author Alexander Langer
+ * Represents a series of events that form a single, consistent unit within an
+ * event stream. 
+ * The events within a ChangeSet are stored in an atomic operation: The events
+ * in a ChangeSet can either be applied to the event stream as a whole, or
+ * none of the events are applied.
  */
 public interface ChangeSet extends Serializable {
 
     /**
-     * Identifies the bucket to which the ChangeSet and the event stream belong.
-     * @return 
+     * Identifies the bucket to which the event stream belongs.
+     * 
+     * @return  the identifier
      */
     String bucketId();
 
     /**
-     * Identifies the event stream to which the ChangeSet belongs.
+     * Identifies the event stream to which this belongs.
+     * 
+     * @return  the identifier
      */
     String streamId();
 
     /**
-     * The version of the event stream to which this ChangeSet applies.
+     * Gets the version of the event stream to which this applies.
+     * 
+     * @return  the version
      */
     long streamVersion();
 
     /**
-     * A unique identifier for this ChangeSet within the stream.
+     * Gets the unique identifier for this ChangeSet within the stream.
+     * 
+     * @return the unique identifer
      */
     UUID changeSetId();
     
     /**
      * Gets an iterator to the events contained within this ChangeSet.
+     * 
+     * @return  the iterator
      */
     Iterator<Serializable> events();
     

@@ -22,9 +22,8 @@
 package org.jeeventstore;
 
 /**
- * An EventStore is used to manage and open streams of events.
- * 
- * @author Alexander Langer
+ * The EventStore orchestrates the creation of event streams.
+ * This is the main entry point to clients of the event store.
  */
 public interface EventStore {
 
@@ -32,35 +31,36 @@ public interface EventStore {
      * Tests whether the stream identified by {@code streamId} exists in the
      * bucket identified by {@code bucketId}.
      * 
-     * @param bucketId The identifier of the bucket to which the stream belongs.
-     * @param streamId The identifier of the stream that is tested for existence.
-     * @return true iff the stream with the stream exists.
+     * @param bucketId  the identifier of the bucket to which the stream belongs
+     * @param streamId  the identifier of the stream that is tested for existence
+     * @return  whether the specified stream exists
      */
     boolean existsStream(String bucketId, String streamId);
 
     /**
-     * Open the latest version of the stream identified by {@code streamId} in the
+     * Opens the latest version of the stream identified by {@code streamId} in the
      * bucket identified by {@code bucketId} for reading.
-     * @param bucketId The identifier of the bucket to which the stream belongs.
-     * @param streamId The identifier of the stream that is opened for reading.
-     * @return The requested event stream as readable event stream.
-     * @throws StreamNotFoundException Thrown when a stream with the given identifier cannot be found in the bucket.
+     * 
+     * @param bucketId  the identifier of the bucket to which the stream belongs
+     * @param streamId  the identifier of the stream that is opened for reading
+     * @return  the requested event stream as readable event stream
+     * @throws StreamNotFoundException  if a stream with the given identifier cannot be found in the bucket
      */
     ReadableEventStream openStreamForReading(String bucketId, String streamId);
 
     /**
-     * Open the stream identified by {@code streamId} in the
+     * Opens the stream identified by {@code streamId} in the
      * bucket identified by {@code bucketId} for reading, but only with
      * a maximum version of {@code maxVersion}.
      * Can be used to load previous versions of the event stream for reading.
      * If {@code maxVersion} is larger than the latest stream version,
-     * the latest stream version will be loaded with the correct version
-     * number set. 
-     * @param bucketId The identifier of the bucket to which the stream belongs.
-     * @param streamId The identifier of the stream that is opened for reading.
-     * @param maxVersion The requested version or Long.MAX_VALUE to load the latest version.
-     * @return The requested event stream as readable event stream.
-     * @throws StreamNotFoundException Thrown when a stream with the given identifier cannot be found in the bucket.
+     * the latest available version of the stream will be loaded.
+     * 
+     * @param bucketId  the identifier of the bucket to which the stream belongs
+     * @param streamId  the identifier of the stream that is opened for reading
+     * @param maxVersion  the requested version or {@code Long.MAX_VALUE} to load the latest version
+     * @return  the requested event stream as readable event stream
+     * @throws StreamNotFoundException  if a stream with the given identifier cannot be found in the bucket
      */
     ReadableEventStream openStreamForReading(String bucketId, String streamId, long maxVersion);
 
@@ -68,27 +68,21 @@ public interface EventStore {
      * Creates a new stream with identifier {@code streamId} in the bucket
      * identified by {@code bucketId}.
      * 
-     * No testing is performed whether a stream with the given identifier
-     * already exists in the bucket, i.e., commiting the changes to the
-     * newly created stream might throw {@link ConcurrencyException}.
      * 
-     * @param bucketId The identifier of the bucket to which the stream belongs.
-     * @param streamId The identifier of the stream that is created.
-     * @return The requested event stream as writable event stream.
+     * @param bucketId  the identifier of the bucket to which the stream belongs
+     * @param streamId  the identifier of the stream that is created
+     * @return  the requested event stream as writable event stream
      */
     WritableEventStream createStream(String bucketId, String streamId);
 
     /**
      * Open the version {@code version} of the stream identified by {@code streamId}
      * in the bucket identified by {@code bucketId} for writing.
-     * No testing is performed whether {@code version} is actually
-     * the latest version in the stream, i.e., commiting the changes to the
-     * newly created stream might throw {@link ConcurrencyException}.
      * 
-     * @param bucketId The identifier of the bucket to which the stream belongs.
-     * @param streamId The identifier of the stream that is opened for reading.
-     * @param version The requested version.
-     * @return The requested event stream as writable event stream.
+     * @param bucketId  the identifier of the bucket to which the stream belongs
+     * @param streamId  the identifier of the stream that is opened for reading
+     * @param version   the requested version of the stream
+     * @return  the requested event stream as writable event stream
      */
     WritableEventStream openStreamForWriting(String bucketId, String streamId, long version);
 

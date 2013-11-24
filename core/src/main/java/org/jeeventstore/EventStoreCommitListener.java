@@ -22,18 +22,23 @@
 package org.jeeventstore;
 
 /**
- * An EventStoreCommitListener is awaiting notifications about
- * changes that have been committed to the event store.
- * 
- * @author Alexander Langer
+ * Provides the ability to receive notifications about changes that have been
+ * committed to the event store.
+ * Important:  Please refer to the documentation of the deployed
+ * {@link EventStoreCommitNotifier} for transaction and quality guarantees
+ * of the {@link #receive} function.
  */
 public interface EventStoreCommitListener {
 
     /**
-     * Receive a notification that a change set has been committed to the
+     * Receives a notification that a change set has been committed to the
      * event store.
      * This method must be thread-safe.
-     * @param notification The actual notification.
+     * <p>
+     * See the {@link EventStoreCommitNotifier} documentation on the transaction
+     * semantics and quality guarantees given for this function.
+     * 
+     * @param notification  the actual notification
      */
     void receive(EventStoreCommitNotification notification);
     

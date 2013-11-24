@@ -29,10 +29,9 @@ import org.jeeventstore.EventStoreCommitNotifier;
 import org.jeeventstore.EventStorePersistence;
 
 /**
- * An {@link EventStorePersistence} decorator that initiates a notification
- * of listeners at the configured {@link EventStoreCommitNotifier}.
- * 
- * @author Alexander Langer
+ * A decorator for {@link EventStorePersistence} that initiates a notification
+ * of listeners at the configured {@link EventStoreCommitNotifier} when
+ * changes are persisted.
  */
 public class NotifyingPersistenceDecorator implements EventStorePersistence {
 

@@ -22,36 +22,35 @@
 package org.jeeventstore;
 
 /**
- * The EventStoreCommitNotifier is responsible for notifying interested
- * listeners about committed changes to the event store.
- * 
- * @author Alexander Langer
+ * Responsible for notifying interested listeners about committed changes to the event store.
  */
 public interface EventStoreCommitNotifier {
 
     /**
-     * Notify all registered listeners about the committed ChangeSet.
+     * Notifies all registered listeners about the committed {@link ChangeSet}.
      * Non-delivered notifications are not persisted during application
      * restarts to avoid expensive 2-phase-commits.  If the server crashes or
      * stops while the notification is in progress, clients are expected to 
      * recover manually on the next server startup (e.g., by replaying the full
-     * event store on application startup).
-     * @param changeSet The change set that has been committed.
+     * event store on application startup using {@link EventStorePersistence#allChanges}).
+     * 
+     * @param changeSet  the change set that has been committed, not null
      */
     void notifyListeners(ChangeSet changeSet);
 
     /**
-     * Add/register a listener.
-     * The listener must not be registered already, otherwise an exception
-     * is thrown.
-     * @param listener The listener that shall be added.
+     * Adds an interested listener.
+     * The listener must not be registered already.
+     * 
+     * @param listener  the listener that shall be added, not null
      */
     void addListener(EventStoreCommitListener listener);
 
     /**
-     * Remove a registered listener.
-     * The listener must be registered, otherwise an exception is thrown.
-     * @param listener The listener that shall be removed.
+     * Removes a registered listener.
+     * The listener must be registered.
+     * 
+     * @param listener  the listener that shall be removed, not null
      */
     void removeListener(EventStoreCommitListener listener);
     

@@ -36,12 +36,10 @@ import org.jeeventstore.ChangeSet;
  * in some circumstances, but if you want to de-couple the committing to
  * the event store from the notification, use the
  * {@link AsyncEventStoreCommitNotifier} instead.
- * 
+ * <p>
  * The notification order is currently
  * in the order of registration, but this is not a guarantee and might change
  * in the future.
- * 
- * @author Alexander Langer
  */
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
 public class SyncEventStoreCommitNotifier
@@ -51,6 +49,8 @@ public class SyncEventStoreCommitNotifier
     @Override
     @Lock(LockType.READ)
     public void notifyListeners(ChangeSet changeSet) {
+        if (changeSet == null)
+            throw new IllegalArgumentException("changeSet must not be null");
         this.performNotification(changeSet);
     }
     

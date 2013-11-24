@@ -27,24 +27,20 @@ import java.util.UUID;
 /**
  * An event stream to which new events can be appended and committed
  * to the event store.
- * Since the existing events in an event stream are not exposed to a client
- * of a writable event stream, a writable event stream can quickly be created
- * without querying the database for the existing events, generally improving
- * performance when events are to be appended to the event stream.
  */
 public interface WritableEventStream extends VersionedEventStream {
 
     /**
      * Append the given event to the event stream.
      * 
-     * @param event  the event to be appended
+     * @param event  the event to be appended, not null
      */
     void append(Serializable event);
 
     /**
      * Commits the changes to durable storage.
      * 
-     * @param commitId  the value that uniquely identifies the commit
+     * @param commitId  the value that uniquely identifies the commit, null returns empty-handed
      * @throws DuplicateCommitException  if a commit with the same id already exists in the bucket
      * @throws ConcurrencyException  if a {@ChangeSet} with the same streamVersion already exists
      *   in the durable storage.

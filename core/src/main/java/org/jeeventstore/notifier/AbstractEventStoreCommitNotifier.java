@@ -32,8 +32,6 @@ import org.jeeventstore.ChangeSet;
 
 /**
  * Base implementation implementing common functionality of commit notifiers.
- * 
- * @author Alexander Langer
  */
 public abstract class AbstractEventStoreCommitNotifier 
         implements EventStoreCommitNotifier {
@@ -43,6 +41,8 @@ public abstract class AbstractEventStoreCommitNotifier
     @Override
     @Lock(LockType.WRITE)
     public void addListener(EventStoreCommitListener listener) {
+        if (listener == null)
+            throw new IllegalArgumentException("listener must not be null");
         if (this.listeners.contains(listener))
             throw new IllegalStateException("Listener already listening.");
         this.listeners.add(listener);
@@ -51,6 +51,8 @@ public abstract class AbstractEventStoreCommitNotifier
     @Override
     @Lock(LockType.WRITE)
     public void removeListener(EventStoreCommitListener listener) {
+        if (listener == null)
+            throw new IllegalArgumentException("listener must not be null");
         if (!this.listeners.contains(listener))
             throw new IllegalStateException("Listener not found.");
         this.listeners.remove(listener);

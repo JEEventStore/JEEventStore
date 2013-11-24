@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import org.jeeventstore.ChangeSet;
 import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.EventStoreCommitListener;
@@ -105,7 +106,7 @@ public class NotifyingPersistenceDecoratorTest implements EventStorePersistence 
     @Override
     public Iterator<ChangeSet> allChanges(String bucketId) {
         List<ChangeSet> list = new ArrayList<>();
-        list.add(new DefaultChangeSet(null, null, 1l, null, new ArrayList<Serializable>()));
+        list.add(new DefaultChangeSet("TEST", "FOO", 1l, UUID.randomUUID(), new ArrayList<Serializable>()));
         this.changeSetIterator = list.iterator();
         return this.changeSetIterator;
     }

@@ -22,10 +22,7 @@
 package org.jeeventstore;
 
 /**
- * An exception that occurs when there is an error in the persistence
- * layer.
- * 
- * @author Alexander Langer
+ * Occurs on non-recoverable errors in the underlying durable storage layer.
  */
 public class StorageException extends RuntimeException {
 

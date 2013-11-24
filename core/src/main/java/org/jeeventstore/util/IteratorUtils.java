@@ -28,11 +28,17 @@ import java.util.List;
 /**
  * Simple utility classes for iterators.
  * Mainly here to avoid library dependencies.
- * 
- * @author Alexander Langer
  */
 public class IteratorUtils {
     
+    /** 
+     * Gets a list based on an iterator. 
+     * As the wrapped Iterator is traversed, an {@link ArrayList} of its values
+     * is created. At the end, the list is returned.
+
+     * @param it  the iterator to be traversed
+     * @return   the list of values found in the traversal of the iterator
+     */
     public static <T> List<T> toList(Iterator<T> it) {
         List<T> list = new ArrayList<>();
         while (it.hasNext())

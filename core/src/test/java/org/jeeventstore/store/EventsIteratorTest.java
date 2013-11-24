@@ -16,7 +16,7 @@ public class EventsIteratorTest {
     @Test
     public void test_that_hasNext_is_false_at_end_of_changeset() {
         List<Integer> data = TestUtils.randomdata(1);
-        ChangeSet cs = new DefaultChangeSet(null, null, 0, UUID.randomUUID(), data);
+        ChangeSet cs = new DefaultChangeSet("BUCKET", "STREAM", 0, UUID.randomUUID(), data);
         List<ChangeSet> lcs = new ArrayList<>();
         lcs.add(cs);
         EventsIterator eit = new EventsIterator(lcs.iterator());
@@ -30,7 +30,7 @@ public class EventsIteratorTest {
         for (int i = 0; i < 30; i++) {
             List<Integer> data = TestUtils.randomdata(i % 5);
             assertEquals(data.size(), i % 5);
-            ChangeSet cs = new DefaultChangeSet(null, null, 0, UUID.randomUUID(), data);
+            ChangeSet cs = new DefaultChangeSet("BUCKET", "STREAM", 0, UUID.randomUUID(), data);
         }
         EventsIterator eit = new EventsIterator(lcs.iterator());
         TestUtils.compare(eit, lcs);
@@ -42,7 +42,7 @@ public class EventsIteratorTest {
         for (int i = 0; i < 10; i++) {
             List<Integer> data = TestUtils.randomdata(0);
             assertEquals(data.size(), 0);
-            ChangeSet cs = new DefaultChangeSet(null, null, 0, UUID.randomUUID(), data);
+            ChangeSet cs = new DefaultChangeSet("BUCKET", "STREAM", 0, UUID.randomUUID(), data);
         }
         EventsIterator eit = new EventsIterator(lcs.iterator());
         assertTrue(!eit.hasNext());

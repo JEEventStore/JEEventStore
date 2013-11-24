@@ -24,8 +24,6 @@ package org.jeeventstore;
 /**
  * An exception that is thrown when there is an optimistic concurrency conflict
  * between multiple writers.
- * 
- * @author Alexander Langer
  */
 public class ConcurrencyException extends Exception {
 

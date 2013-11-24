@@ -26,24 +26,22 @@ import java.util.List;
 
 /**
  * Provides the ability to serialize and deserialize events.
- * 
- * @author Alexander Langer
  */
 public interface EventSerializer {
     
     /**
-     * Serializes a list of events and returns a serialized representation.
+     * Serializes a list of events into a {@link String} representation.
      * 
-     * @param events The list of events to be serialized.
-     * @return A {@link String} representation of the serialized events.
+     * @param events  the list of events to be serialized, not null
+     * @return  the {@link String} representation of the events
      */
     String serialize(List<? extends Serializable> events);
 
     /**
      * Deserializes the String provided and reconstructs the corresponding 
      * list of events.
-     * @param body The {@link String} from which the list of events will be reconstructed.
-     * @return The reconstructed list.
+     * @param body  the {@link String} from which the list of events will be reconstructed, not null
+     * @return  the reconstructed list
      */
     List<? extends Serializable> deserialize(String body);
 

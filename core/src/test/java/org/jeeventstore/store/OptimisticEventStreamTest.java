@@ -1,5 +1,6 @@
 package org.jeeventstore.store;
 
+import org.jeeventstore.StreamNotFoundException;
 import org.jeeventstore.persistence.MockPersistence;
 import java.io.Serializable;
 import java.util.Iterator;

@@ -19,12 +19,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.jeeventstore.store;
+package org.jeeventstore;
 
 /**
- * An exception that occurs when a stream does not exist as specified.
- * 
- * @author Alexander Langer
+ * An exception that occurs when a specified stream does not exist.
  */
 public class StreamNotFoundException extends RuntimeException {
 

@@ -26,7 +26,7 @@
         <session>
             <ejb-name>EventStore</ejb-name>
             <business-local>org.jeeventstore.EventStore</business-local>
-            <ejb-class>org.jeeventstore.store.EventStoreService</ejb-class>
+            <ejb-class>org.jeeventstore.store.OptimisticEventStoreService</ejb-class>
             <session-type>Stateless</session-type>
             <ejb-local-ref>
                 <ejb-ref-name>persistence</ejb-ref-name>

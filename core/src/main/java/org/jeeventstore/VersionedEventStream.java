@@ -30,21 +30,21 @@ package org.jeeventstore;
 public interface VersionedEventStream {
 
     /**
-     * Identifies the bucket to which the EventStream belongs.
+     * Identifies the bucket to which the event stream belongs.
      * 
      * @return  the id of the bucket
      */
     String bucketId();
 
     /**
-     * Identifies the EventStream within the bucket.
+     * Identifies the event stream within the bucket.
      * 
      * @return  the id of the stream
      */
     String streamId();
 
     /**
-     * The version of the EventStream.
+     * The version of the event stream.
      * 
      * @return  the version 
      */

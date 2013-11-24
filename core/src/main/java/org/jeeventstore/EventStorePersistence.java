@@ -25,52 +25,53 @@ import java.util.Iterator;
 
 /**
  * Persistence provider for the event store.
- * This interface abstract away any specific persistence implementation
- * from the event store.
- * 
- * @author Alexander Langer
  */
 public interface EventStorePersistence {
 
     /**
-     * Test whether an event stream with identifier {@code streamId} exists
+     * Tests whether an event stream with identifier {@code streamId} exists
      * in the bucket identified by {@code bucketId}.
-     * @param bucketId The identifier of the bucket to which the stream belongs.
-     * @param streamId The identifier of the stream that is tested for existence.
-     * @return true iff the specified stream exists.
+     * 
+     * @param bucketId  the identifier of the bucket to which the stream belongs, not null
+     * @param streamId  the identifier of the stream that is tested for existence, not null
+     * @return  whether the specified stream exists
      */
     boolean existsStream(String bucketId, String streamId);
     
     /**
-     * Load all changes that have been persisted into the given bucket.
+     * Gets an iterator to all changes persisted to the given bucket.
      * The order of events is consistent on a per-stream basis, but no
      * other ordering guarantee can be given.
+     * <p>
+     * Some persistence implementations support deferred ("streamed") loading
+     * of events from the persistence store.
+     * It depends on the persistence implementation whether {@link #allChanges}
+     * requires an open transaction and requires {@link Iterator#next()} to be
+     * called within this open transaction.
      * 
-     * As the {@link ChangeSet}s might be lazy-loaded, {@link Iterator#next()}
-     * may only be called within the same transaction that was open in
-     * the call to {@link allChanges} (if transactions are used).
-     * 
-     * @param bucketId The identifier of the bucket from which the changes are fetched.
-     * @return An iterator to the changes.
+     * @param bucketId  the identifier of the bucket from which the changes are fetched, not null
+     * @return  the iterator to the changes
      */
     Iterator<ChangeSet> allChanges(String bucketId);
 
     /**
-     * Get all {@link ChangeSet}s between {@code minVersion} (exclusive) and
-     * {@code maxVersion} (inclusive) in the specified event stream.
-     * The order of the respective {@link ChangeSet#streamVersion()} is guaranteed
+     * Gets an iterator to all changes ({@link ChangeSet}s) between version
+     * {@code minVersion} (exclusive) and version {@code maxVersion} (inclusive)
+     * in the specified event stream.
+     * The order of the respective {@link ChangeSet#streamVersion} is guaranteed
      * to be strictly increasing.
+     * <p>
+     * Some persistence implementations support deferred ("streamed") loading
+     * of events from the persistence store.
+     * It depends on the persistence implementation whether {@link #getFrom}
+     * requires an open transaction and requires {@link Iterator#next()} to be
+     * called within this open transaction.
      * 
-     * As the {@link ChangeSet}s might be lazy-loaded, {@link Iterator#next()}
-     * may only be called within the same transaction that was open in
-     * the call to {@code getFrom()} (if transactions are used).
-     * 
-     * @param bucketId The identifier of the bucket to which the stream belongs.
-     * @param streamId The identifier of the stream that is to be retrieved from.
-     * @param minVersion The minimum version (exclusive) of the {@link ChangeSet} to fetch.
-     * @param maxVersion The maximum version (inclusive) of the {@link ChangeSet} to fetch.
-     *      The version of the last {@link ChangeSet} fetched is typically smaller.
-     * @return An iterator to the {@link ChangeSet}s in the stream in order of their version.
+     * @param bucketId  the identifier of the bucket to which the stream belongs, not null
+     * @param streamId  the identifier of the stream that is to be retrieved from, not null
+     * @param minVersion  the minimum version (exclusive) of the {@link ChangeSet} to fetch
+     * @param maxVersion  the maximum version (inclusive) of the {@link ChangeSet} to fetch
+     * @return  the iterator to the {@link ChangeSet}s
      */
     Iterator<ChangeSet> getFrom(
             String bucketId,
@@ -79,13 +80,14 @@ public interface EventStorePersistence {
             long maxVersion);
 
     /**
-     * Persist the given {@link ChangeSet} to the persistence store.
-     * @param changeSet The changes to be persisted.
-     * @throws ConcurrencyException if there already exists a {@link ChangeSet}
+     * Persists the given {@link ChangeSet} to the durable storage.
+     * 
+     * @param changeSet  the changes to be persisted, not null
+     * @throws ConcurrencyException  if there already exists a {@link ChangeSet}
      *  within the respective stream that has the same {@link ChangeSet#streamVersion() version}
-     *  (Not supported with all implementations!).
-     * @throws DuplicateCommitException if there already exists a {@link ChangeSet}
-     *  with the same id (Not supported with all implementations!).
+     *  (Not supported with all implementations)
+     * @throws DuplicateCommitException  if there already exists a {@link ChangeSet}
+     *  with the same id (Not supported with all implementations)
      */
     void persistChanges(ChangeSet changeSet)
             throws ConcurrencyException, DuplicateCommitException;

@@ -26,9 +26,8 @@ import java.util.Iterator;
 import org.jeeventstore.ChangeSet;
 
 /**
- * An iterator that iterates over all events in a series of {@link ChangeSet}s.
- * 
- * @author Alexander Langer
+ * An iterator that iterates over all events for multiple {@link ChangeSet}s
+ * in a proper sequence.
  */
 public class EventsIterator<T extends ChangeSet> implements Iterator<Serializable> {
 
@@ -69,7 +68,7 @@ public class EventsIterator<T extends ChangeSet> implements Iterator<Serializabl
     }
 
     /**
-     * {@link remove()} is not supported.
+     * {@link #remove()} is not supported.
      */
     @Override
     public void remove() {

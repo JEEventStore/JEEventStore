@@ -23,7 +23,6 @@ package org.jeeventstore;
 
 /**
  * An event stream that can be accessed for both, reading and for writing.
- * @author Alexander Langer
  */
 public interface ReadWriteEventStream
         extends ReadableEventStream, WritableEventStream {

@@ -25,14 +25,14 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 /**
- * A readable event stream is an event stream whose events can be accessed.
- * 
- * @author Alexander Langer
+ * An event stream whose events can be accessed.
  */
 public interface ReadableEventStream extends VersionedEventStream {
 
     /**
-     * Gets an iterator to the events contained within this EventStream.
+     * Gets an iterator to the events contained within this stream.
+     * 
+     * @return  the iterator
      */
     Iterator<Serializable> events();
 
