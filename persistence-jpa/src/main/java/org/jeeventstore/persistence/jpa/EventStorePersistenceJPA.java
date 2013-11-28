@@ -78,18 +78,7 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
     public Iterator<ChangeSet> allChanges(final String bucketId) {
         if (bucketId == null)
             throw new IllegalArgumentException("bucketId must not be null");
-        return fetchResults(new CriteriaQueryBuilder() {
-            @Override
-            public void addPredicates(CriteriaBuilder builder,
-                    CriteriaQuery<?> query, Root<EventStoreEntry> root) {
-                query.where(builder.equal(root.get(EventStoreEntry_.bucketId), bucketId));
-            }
-            @Override
-            public void addOrderBy(CriteriaBuilder builder,
-                    CriteriaQuery<?> query, Root<EventStoreEntry> root) {
-                query.orderBy(builder.asc(root.get(EventStoreEntry_.id)));
-            }
-        });
+        return fetchResults(bucketId, allChangesQueryBuilder(bucketId));
     }
 
     @Override
@@ -103,7 +92,7 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
         if (streamId == null)
             throw new IllegalArgumentException("streamId must not be null");
 
-        return fetchResults(streamQueryBuilder(bucketId, streamId, minVersion, maxVersion));
+        return fetchResults(bucketId, streamQueryBuilder(bucketId, streamId, minVersion, maxVersion));
     }
 
     @Override
@@ -114,7 +103,7 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
             throw new IllegalArgumentException("streamId must not be null");
 
         CriteriaQueryBuilder cqb = streamQueryBuilder(bucketId, streamId, 0, Long.MAX_VALUE);
-        return QueryUtils.countResults(entityManager, cqb) > 0;
+        return QueryUtils.countResults(entityManagerFor(bucketId), cqb) > 0;
     }
 
     @Override
@@ -122,28 +111,58 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
         if (changeSet == null)
             throw new IllegalArgumentException("changeSet must not be null");
 
+        String body = createSerializedBody(changeSet);
+	log.log(Level.FINE, "writing {0} as serialized {1}",
+                new Object[]{changeSet.changeSetId(), body});
+        EventStoreEntry entry = createEntry(changeSet, body);
+        doPersist(changeSet.bucketId(), entry);
+        log.log(Level.FINE, "wrote ChangeSet {0} to event store, id #{1}",
+                new Object[]{changeSet.changeSetId(),
+                    Long.toString(entry.id() == null ? -1 : entry.id())});
+    }
+
+    protected String createSerializedBody(ChangeSet changeSet) {
         List<Serializable> list = new ArrayList<>();
         Iterator<Serializable> it = changeSet.events();
         while (it.hasNext())
             list.add(it.next());
+        return serializer.serialize(list);
+    }
 
-        String body = serializer.serialize(list);
-	log.log(Level.FINE, "writing {0}: {1}",
-                new Object[]{changeSet.changeSetId(), body});
-        EventStoreEntry entry = new EventStoreEntry(
+    protected EventStoreEntry createEntry(ChangeSet changeSet, String body) {
+        return new EventStoreEntry(
                 changeSet.bucketId(),
                 changeSet.streamId(),
                 changeSet.streamVersion(), 
                 System.currentTimeMillis(),
                 changeSet.changeSetId().toString(),
                 body);
-        entityManager.persist(entry);
-        log.log(Level.FINE, "wrote ChangeSet {0} to event store, has id #{1}",
-                new Object[]{changeSet.changeSetId(),
-                    Long.toString(entry.id() == null ? -1 : entry.id())});
     }
 
-    private CriteriaQueryBuilder streamQueryBuilder(
+    protected void doPersist(String bucketId, EventStoreEntry entry) {
+        entityManagerFor(bucketId).persist(entry);
+    }
+
+    protected EntityManager entityManagerFor(String bucketId) {
+        return this.entityManager;
+    }
+
+    protected CriteriaQueryBuilder allChangesQueryBuilder(final String bucketId) {
+        return new CriteriaQueryBuilder() {
+            @Override
+            public void addPredicates(CriteriaBuilder builder,
+                    CriteriaQuery<?> query, Root<EventStoreEntry> root) {
+                query.where(builder.equal(root.get(EventStoreEntry_.bucketId), bucketId));
+            }
+            @Override
+            public void addOrderBy(CriteriaBuilder builder,
+                    CriteriaQuery<?> query, Root<EventStoreEntry> root) {
+                query.orderBy(builder.asc(root.get(EventStoreEntry_.id)));
+            }
+        };
+    }
+
+    protected CriteriaQueryBuilder streamQueryBuilder(
             final String bucketId, final String streamId,
             final long minVersion, final long maxVersion) {
 
@@ -165,8 +184,8 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
         };
     }
 
-    private Iterator<ChangeSet> fetchResults(CriteriaQueryBuilder cqb) {
-        return new LazyLoadIterator(entityManager, cqb, serializer)
+    protected Iterator<ChangeSet> fetchResults(String bucketId, CriteriaQueryBuilder cqb) {
+        return new LazyLoadIterator(entityManagerFor(bucketId), cqb, serializer)
                 .setFetchBatchSize(fetchBatchSize);
     }
 

@@ -28,7 +28,7 @@ import javax.persistence.criteria.Root;
 /**
  * Provides the ability to initialize a JPA {@link CriteriaQuery}.
  */
-interface CriteriaQueryBuilder {
+public interface CriteriaQueryBuilder {
 
     public void addPredicates(CriteriaBuilder builder,
             CriteriaQuery<?> criteria, Root<EventStoreEntry> root);
