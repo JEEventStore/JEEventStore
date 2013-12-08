@@ -23,7 +23,6 @@ package org.jeeventstore;
 
 import java.io.Serializable;
 import java.util.Iterator;
-import java.util.UUID;
 
 /**
  * Represents a series of events that form a single, consistent unit within an
@@ -60,7 +59,7 @@ public interface ChangeSet extends Serializable {
      * 
      * @return the unique identifer
      */
-    UUID changeSetId();
+    String changeSetId();
     
     /**
      * Gets an iterator to the events contained within this ChangeSet.

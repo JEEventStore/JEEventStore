@@ -9,7 +9,6 @@ import java.util.UUID;
 import org.jeeventstore.ChangeSet;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import org.testng.collections.Lists;
 
 /**
  *
@@ -41,7 +40,7 @@ public class TestUtils {
         List<ChangeSet> list = new ArrayList<>();
         for (int i = minversion; i <= maxversion; i++) {
             List<Integer> data = TestUtils.randomdata(i % (maxversion - minversion + 5));
-            ChangeSet cs = new DefaultChangeSet(bId, sId, i, UUID.randomUUID(), data);
+            ChangeSet cs = new DefaultChangeSet(bId, sId, i, UUID.randomUUID().toString(), data);
             list.add(cs);
         }
         return list;

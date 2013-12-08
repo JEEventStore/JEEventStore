@@ -1,13 +1,8 @@
 package org.jeeventstore.store;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
 import org.jeeventstore.ChangeSet;
-import static org.testng.Assert.*;
-import org.testng.annotations.Test;
 
 /**
  * A mocked ChangeSet used in unit tests.
@@ -36,7 +31,7 @@ public class TestChangeSet implements ChangeSet {
     }
 
     @Override
-    public UUID changeSetId() {
+    public String changeSetId() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

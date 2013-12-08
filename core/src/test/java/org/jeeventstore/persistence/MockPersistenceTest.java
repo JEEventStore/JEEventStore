@@ -80,7 +80,7 @@ public class MockPersistenceTest {
     @Test
     private void testConcurrencyFailure() throws DuplicateCommitException {
         List<Integer> data = TestUtils.randomdata(10);
-        ChangeSet cs = new DefaultChangeSet("", "", 100, UUID.randomUUID(), data);
+        ChangeSet cs = new DefaultChangeSet("", "", 100, UUID.randomUUID().toString(), data);
         try {
             persistence.persistChanges(cs);
             fail("Should have failed by now");

@@ -22,7 +22,6 @@ import static org.testng.Assert.*;
 
 /**
  *
- * @author Alexander Langer
  */
 @Singleton
 @LocalBean
@@ -54,7 +53,7 @@ public class PersistenceTestHelper {
                             "DEFAULT",
                             "TEST_" + i,
                             j,
-                            UUID.randomUUID(),
+                            UUID.randomUUID().toString(),
                             new ArrayList<Serializable>());
                     data_default.add(cs);
                     persistence.persistChanges(cs);
@@ -65,7 +64,7 @@ public class PersistenceTestHelper {
                         "TEST",
                         "SINGLE_STREAM" + i,
                         i,
-                        UUID.randomUUID(),
+                        UUID.randomUUID().toString(),
                         new ArrayList<Serializable>());
                 data_test.add(cs);
                 persistence.persistChanges(cs);

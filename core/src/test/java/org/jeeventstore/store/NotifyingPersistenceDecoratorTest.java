@@ -106,7 +106,7 @@ public class NotifyingPersistenceDecoratorTest implements EventStorePersistence 
     @Override
     public Iterator<ChangeSet> allChanges(String bucketId) {
         List<ChangeSet> list = new ArrayList<>();
-        list.add(new DefaultChangeSet("TEST", "FOO", 1l, UUID.randomUUID(), new ArrayList<Serializable>()));
+        list.add(new DefaultChangeSet("TEST", "FOO", 1l, UUID.randomUUID().toString(), new ArrayList<Serializable>()));
         this.changeSetIterator = list.iterator();
         return this.changeSetIterator;
     }

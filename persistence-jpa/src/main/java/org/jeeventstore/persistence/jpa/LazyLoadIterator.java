@@ -25,7 +25,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -82,7 +81,7 @@ class LazyLoadIterator implements Iterator<ChangeSet> {
                 entry.bucketId(),
                 entry.streamId(),
                 entry.streamVersion(),
-                UUID.fromString(entry.changeSetId()),
+                entry.changeSetId(),
                 events);
     }
 

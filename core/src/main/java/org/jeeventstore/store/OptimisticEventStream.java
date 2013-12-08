@@ -26,7 +26,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jeeventstore.EventStorePersistence;
@@ -161,7 +160,7 @@ final class OptimisticEventStream
     }
 
     @Override
-    public void commit(UUID commitId) 
+    public void commit(String commitId) 
             throws DuplicateCommitException, ConcurrencyException {
         if (commitId == null)
             throw new IllegalArgumentException("commitId must not be null");
@@ -176,7 +175,7 @@ final class OptimisticEventStream
         this.clearChanges();
     }
 
-    private void persistChanges(UUID commitId)
+    private void persistChanges(String commitId)
             throws ConcurrencyException, DuplicateCommitException {
 
         long newversion = version + 1;

@@ -60,7 +60,7 @@ public class AbstractPersistenceTest extends Arquillian {
                 "DEFAULT",
                 "TEST_49",
                 5, // exists
-                UUID.randomUUID(),
+                UUID.randomUUID().toString(),
                 new ArrayList<Serializable>());
         try {
             persistence.persistChanges(cs);
@@ -72,7 +72,7 @@ public class AbstractPersistenceTest extends Arquillian {
 
     @Test
     public void test_duplicate_commit() throws ConcurrencyException {
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         try {
             for (int i = 0; i < 2; i++)
                 persistence.persistChanges(new DefaultChangeSet(
@@ -163,7 +163,7 @@ public class AbstractPersistenceTest extends Arquillian {
         try {
             ChangeSet cs = new DefaultChangeSet(
                     bucketId, streamId, 1, 
-                    UUID.randomUUID(),
+                    UUID.randomUUID().toString(),
                     events);
             persistence.persistChanges(cs);
         } catch (ConcurrencyException | DuplicateCommitException e) {

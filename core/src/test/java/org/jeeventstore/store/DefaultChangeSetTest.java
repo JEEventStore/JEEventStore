@@ -19,7 +19,7 @@ public class DefaultChangeSetTest {
     private final static String BUCKET_ID = "TEST_BUCKET";
     private final static String STREAM_ID = "TEST_STREAM";
     private final static long STREAM_VERSION = 28;
-    private final static UUID CHANGE_SET_ID = UUID.randomUUID();
+    private final static String CHANGE_SET_ID = UUID.randomUUID().toString();
     private final static List<Serializable> EVENTS = new ArrayList<Serializable>();
     
     private ChangeSet get() {

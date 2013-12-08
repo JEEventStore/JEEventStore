@@ -127,7 +127,7 @@ public class OptimisticEventStreamTest {
         List<Integer> ints = TestUtils.randomdata(10);
         for (Integer i : ints)
             oes.append(i);
-        UUID commitId = UUID.randomUUID();
+        String commitId = UUID.randomUUID().toString();
         try {
             oes.commit(commitId);
         } catch (DuplicateCommitException | ConcurrencyException e) {
@@ -156,7 +156,7 @@ public class OptimisticEventStreamTest {
         List<Integer> ints = TestUtils.randomdata(10);
         for (Integer i : ints)
             oes.append(i);
-        UUID commitId = UUID.randomUUID();
+        String commitId = UUID.randomUUID().toString();
         try {
             oes.commit(commitId);
         } catch (DuplicateCommitException | ConcurrencyException e) {
@@ -175,7 +175,7 @@ public class OptimisticEventStreamTest {
         oes.append(null);
         oes.append(null);
         oes.append(null);
-        oes.commit(UUID.randomUUID());
+        oes.commit(UUID.randomUUID().toString());
         assertEquals(NUM_CHANGESETS, oes.version());
         assertEquals(NUM_CHANGESETS, number_of_persisted_changesets());
     }
@@ -185,7 +185,7 @@ public class OptimisticEventStreamTest {
         assertEquals(NUM_CHANGESETS, number_of_persisted_changesets());
         OptimisticEventStream oes = (OptimisticEventStream) OptimisticEventStream
                 .createWritable(BUCKET_ID, STREAM_ID, NUM_CHANGESETS, persistence);
-        oes.commit(UUID.randomUUID());
+        oes.commit(UUID.randomUUID().toString());
         assertEquals(NUM_CHANGESETS, oes.version());
         assertEquals(NUM_CHANGESETS, number_of_persisted_changesets());
     }
@@ -196,10 +196,10 @@ public class OptimisticEventStreamTest {
         OptimisticEventStream oes = (OptimisticEventStream) OptimisticEventStream
                 .createWritable(BUCKET_ID, STREAM_ID, NUM_CHANGESETS, persistence);
         oes.append(new Long(8));
-        oes.commit(UUID.randomUUID());
+        oes.commit(UUID.randomUUID().toString());
         assertEquals(NUM_CHANGESETS + 1, oes.version());
         assertEquals(NUM_CHANGESETS + 1, number_of_persisted_changesets());
-        oes.commit(UUID.randomUUID());
+        oes.commit(UUID.randomUUID().toString());
         assertEquals(NUM_CHANGESETS + 1, oes.version());
         assertEquals(NUM_CHANGESETS + 1, number_of_persisted_changesets());
     }
@@ -211,7 +211,7 @@ public class OptimisticEventStreamTest {
                 .createWritable(BUCKET_ID, STREAM_ID, 10, persistence);
         oes.append(new Long(8));
         try {
-            oes.commit(UUID.randomUUID());
+            oes.commit(UUID.randomUUID().toString());
             fail("Should have failed by now");
         } catch (ConcurrencyException e) {
             // expect this
@@ -229,12 +229,12 @@ public class OptimisticEventStreamTest {
         assertEquals(NUM_CHANGESETS, oes.version());
         assertEquals(NUM_CHANGESETS, number_of_persisted_changesets());
 
-        oes.commit(UUID.randomUUID()); // empty commit
+        oes.commit(UUID.randomUUID().toString()); // empty commit
         assertEquals(NUM_CHANGESETS, oes.version());
         assertEquals(NUM_CHANGESETS, number_of_persisted_changesets());
 
         oes.append(new Long(42));
-        oes.commit(UUID.randomUUID());
+        oes.commit(UUID.randomUUID().toString());
         assertEquals(NUM_CHANGESETS + 1, oes.version());
         assertEquals(NUM_CHANGESETS + 1, number_of_persisted_changesets());
     }
@@ -250,7 +250,7 @@ public class OptimisticEventStreamTest {
         assertEquals(NUM_CHANGESETS, oes.version());
         assertEquals(NUM_CHANGESETS, number_of_persisted_changesets());
 
-        oes.commit(UUID.randomUUID());
+        oes.commit(UUID.randomUUID().toString());
         assertEquals(NUM_CHANGESETS + 1, oes.version());
         assertEquals(NUM_CHANGESETS + 1, number_of_persisted_changesets());
 
@@ -267,7 +267,7 @@ public class OptimisticEventStreamTest {
         OptimisticEventStream oes = (OptimisticEventStream) OptimisticEventStream
                 .createWritable(BUCKET_ID, STREAM_ID, NUM_CHANGESETS, persistence);
         oes.append(new Long(8));
-        oes.commit(UUID.randomUUID());
+        oes.commit(UUID.randomUUID().toString());
         try {
             oes.events();
             fail("Should have failed by now");

@@ -22,7 +22,6 @@
 package org.jeeventstore;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 /**
  * An event stream to which new events can be appended and committed
@@ -45,7 +44,7 @@ public interface WritableEventStream extends VersionedEventStream {
      * @throws ConcurrencyException  if a {@ChangeSet} with the same streamVersion already exists
      *   in the durable storage.
      */
-    void commit(UUID commitId) 
+    void commit(String commitId) 
             throws DuplicateCommitException, ConcurrencyException;
 
     /**

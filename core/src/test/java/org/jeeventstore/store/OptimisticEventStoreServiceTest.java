@@ -92,7 +92,7 @@ public class OptimisticEventStoreServiceTest extends Arquillian
             List<Integer> data = TestUtils.randomdata(i % 5 + 1);
             for (Integer ii : data)
                 wes.append(ii);
-            wes.commit(UUID.randomUUID());
+            wes.commit(UUID.randomUUID().toString());
         }
     }
 
@@ -169,7 +169,7 @@ public class OptimisticEventStoreServiceTest extends Arquillian
         WritableEventStream wes = eventStore.openStreamForWriting("BUCKET_ID", "FOO", 8);
         wes.append("bla");
         try {
-            wes.commit(UUID.randomUUID());
+            wes.commit(UUID.randomUUID().toString());
             fail("Should have failed by now");
         } catch (ConcurrencyException e) {
             // expected
@@ -185,7 +185,7 @@ public class OptimisticEventStoreServiceTest extends Arquillian
         List<Integer> data = TestUtils.randomdata(10);
         for (int i = 0; i < 6; i++)
             wes.append(data.get(i));
-        UUID c1id = UUID.randomUUID();
+        String c1id = UUID.randomUUID().toString();
         wes.commit(c1id);
         assertEquals(wes.version(), initialVersion + 1);
 
@@ -199,7 +199,7 @@ public class OptimisticEventStoreServiceTest extends Arquillian
 
         for (int i = 6; i < 10; i++)
                 wes.append(data.get(i));
-        UUID c2id = UUID.randomUUID();
+        String c2id = UUID.randomUUID().toString();
         wes.commit(c2id);
         assertEquals(initialVersion + 2, wes.version());
 

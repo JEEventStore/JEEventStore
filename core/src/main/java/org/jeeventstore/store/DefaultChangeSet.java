@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 import org.jeeventstore.ChangeSet;
 
 /**
@@ -37,14 +36,14 @@ public class DefaultChangeSet implements ChangeSet {
     private String bucketId;
     private String streamId;
     private long streamVersion;
-    private UUID changeSetId;
+    private String changeSetId;
     private List<Serializable> events;
 
     public DefaultChangeSet(
             String bucketId,
             String streamId,
             long streamVersion,
-            UUID changeSetId,
+            String changeSetId,
             List<? extends Serializable> events) {
 
         if (bucketId == null)
@@ -81,7 +80,7 @@ public class DefaultChangeSet implements ChangeSet {
     }
 
     @Override
-    public UUID changeSetId() {
+    public String changeSetId() {
         return changeSetId;
     }
 
