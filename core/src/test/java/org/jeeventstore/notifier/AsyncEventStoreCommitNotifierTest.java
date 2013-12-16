@@ -74,7 +74,7 @@ public class AsyncEventStoreCommitNotifierTest extends AbstractEventStoreCommitN
     public void test_asynchronous_delivery() {
         this.clear();
         EventStoreCommitNotifier instance = this.instance();
-        instance.addListener(this);
+        instance.addListener(DEFAULT_BUCKET, this);
         String id = UUID.randomUUID().toString();
         ChangeSet cs = changeSet(id);
 
@@ -91,14 +91,14 @@ public class AsyncEventStoreCommitNotifierTest extends AbstractEventStoreCommitN
         // now we wait long enough to guarantee delivery
         this.sleep(WAIT_TIME * 3);
         assertEquals(caught, true);
-        assertEquals(caughtCS.bucketId(), id);
+        assertEquals(caughtCS.streamId(), id);
     }
 
     @Test
     public void test_that_there_is_no_notification_on_rollback() {
         this.clear();
         EventStoreCommitNotifier instance = this.instance();
-        instance.addListener(this);
+        instance.addListener(DEFAULT_BUCKET, this);
         String id = UUID.randomUUID().toString();
         ChangeSet cs = changeSet(id);
         helper.submit_then_rollback(cs, WAIT_TIME);
@@ -113,7 +113,7 @@ public class AsyncEventStoreCommitNotifierTest extends AbstractEventStoreCommitN
         // retry interval is 1 sec on Glassfish, wait twice the amount
         int waited = triesUntilSuccess * 2;
         EventStoreCommitNotifier instance = this.instance();
-        instance.addListener(this);
+        instance.addListener(DEFAULT_BUCKET, this);
         String id = UUID.randomUUID().toString();
         ChangeSet cs = changeSet(id);
         helper.submit_and_commit(cs);
@@ -124,7 +124,7 @@ public class AsyncEventStoreCommitNotifierTest extends AbstractEventStoreCommitN
                 break;
         }
         assertEquals(caught, true);
-        assertEquals(caughtCS.bucketId(), id);
+        assertEquals(caughtCS.streamId(), id);
     }
     
 }

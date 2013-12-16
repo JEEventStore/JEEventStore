@@ -33,6 +33,8 @@ import org.testng.annotations.Test;
 public class OptimisticEventStoreServiceTest extends Arquillian 
     implements EventStoreCommitListener {
 
+    public final static String BUCKET_ID = "BUCKET_ID";
+
     // these must be static to have them set from different threads
     protected static boolean caught = false;
     protected static ChangeSet caughtCS = null;
@@ -73,7 +75,7 @@ public class OptimisticEventStoreServiceTest extends Arquillian
 
     private void cleanup() {
         try {
-            notifier.addListener(this);
+            notifier.addListener(BUCKET_ID, this);
         } catch (IllegalStateException | EJBException e) {
             // ignore
         }
@@ -99,9 +101,9 @@ public class OptimisticEventStoreServiceTest extends Arquillian
     @Test
     public void test_openStreamForReading() throws Exception {
         cleanup();
-        fill("BUCKET_ID", "FOO", 10);
-        ReadableEventStream res = eventStore.openStreamForReading("BUCKET_ID", "FOO");
-        assertEquals(res.bucketId(), "BUCKET_ID");
+        fill(BUCKET_ID, "FOO", 10);
+        ReadableEventStream res = eventStore.openStreamForReading(BUCKET_ID, "FOO");
+        assertEquals(res.bucketId(), BUCKET_ID);
         assertEquals(res.streamId(), "FOO");
         assertEquals(res.version(), 10);
     }
@@ -124,9 +126,9 @@ public class OptimisticEventStoreServiceTest extends Arquillian
     @Test
     public void test_openStreamForReading_versioned() throws Exception {
         cleanup();
-        fill("BUCKET_ID", "FOO", 10);
-        ReadableEventStream res = eventStore.openStreamForReading("BUCKET_ID", "FOO", 6);
-        assertEquals(res.bucketId(), "BUCKET_ID");
+        fill(BUCKET_ID, "FOO", 10);
+        ReadableEventStream res = eventStore.openStreamForReading(BUCKET_ID, "FOO", 6);
+        assertEquals(res.bucketId(), BUCKET_ID);
         assertEquals(res.streamId(), "FOO");
         assertEquals(res.version(), 6);
     }
@@ -142,31 +144,31 @@ public class OptimisticEventStoreServiceTest extends Arquillian
     @Test
     public void testCreateStream() throws Exception {
         cleanup();
-        WritableEventStream wes = eventStore.createStream("BUCKET_ID", "CREATED");
+        WritableEventStream wes = eventStore.createStream(BUCKET_ID, "CREATED");
         assertEquals(wes.version(), 0);
         testWriting(wes);
-        assertEquals("BUCKET_ID", wes.bucketId());
+        assertEquals(BUCKET_ID, wes.bucketId());
         assertEquals("CREATED", wes.streamId());
     }
     
     @Test
     public void testOpenStreamForWriting() throws Exception {
         cleanup();
-        fill("BUCKET_ID", "FOO", 10);
-        WritableEventStream wes = eventStore.openStreamForWriting("BUCKET_ID", "FOO", 10);
+        fill(BUCKET_ID, "FOO", 10);
+        WritableEventStream wes = eventStore.openStreamForWriting(BUCKET_ID, "FOO", 10);
         assertEquals(wes.version(), 10);
         testWriting(wes);
-        assertEquals("BUCKET_ID", wes.bucketId());
+        assertEquals(BUCKET_ID, wes.bucketId());
         assertEquals("FOO", wes.streamId());
     }
 
     @Test
     public void testOpenStreamForWritingConcurrency() throws Exception {
         cleanup();
-        fill("BUCKET_ID", "FOO", 10);
+        fill(BUCKET_ID, "FOO", 10);
         caught = false;
         caughtCS = null;
-        WritableEventStream wes = eventStore.openStreamForWriting("BUCKET_ID", "FOO", 8);
+        WritableEventStream wes = eventStore.openStreamForWriting(BUCKET_ID, "FOO", 8);
         wes.append("bla");
         try {
             wes.commit(UUID.randomUUID().toString());
@@ -176,7 +178,7 @@ public class OptimisticEventStoreServiceTest extends Arquillian
         }
         assertTrue(!caught);
         assertTrue(caughtCS == null);
-        assertEquals("BUCKET_ID", wes.bucketId());
+        assertEquals(BUCKET_ID, wes.bucketId());
         assertEquals("FOO", wes.streamId());
     }
 

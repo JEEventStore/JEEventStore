@@ -9,20 +9,22 @@ import org.jeeventstore.ChangeSet;
  */
 public class TestChangeSet implements ChangeSet {
 
+    private String bucketId;
     private String id;
 
-    public TestChangeSet(String id) {
+    public TestChangeSet(String bucketId, String id) {
+        this.bucketId = bucketId;
         this.id = id;
     }
 
     @Override
     public String bucketId() {
-        return this.id;
+        return this.bucketId;
     }
 
     @Override
     public String streamId() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.id;
     }
 
     @Override

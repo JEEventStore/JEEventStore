@@ -39,19 +39,21 @@ public interface EventStoreCommitNotifier {
     void notifyListeners(ChangeSet changeSet);
 
     /**
-     * Adds an interested listener.
-     * The listener must not be registered already.
+     * Adds an interested listener for the given bucket.
+     * The listener must not be registered in that bucket already.
      * 
+     * @param bucketId  the bucket that the listener is interested in
      * @param listener  the listener that shall be added, not null
      */
-    void addListener(EventStoreCommitListener listener);
+    void addListener(String bucketId, EventStoreCommitListener listener);
 
     /**
-     * Removes a registered listener.
-     * The listener must be registered.
+     * Removes a registered listener from the given bucket.
+     * The listener must be registered in the specified bucket
      * 
+     * @param bucketId  the bucket that the listener was registered for
      * @param listener  the listener that shall be removed, not null
      */
-    void removeListener(EventStoreCommitListener listener);
+    void removeListener(String bucketId, EventStoreCommitListener listener);
     
 }

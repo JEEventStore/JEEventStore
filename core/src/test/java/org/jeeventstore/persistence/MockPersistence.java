@@ -42,7 +42,7 @@ public class MockPersistence implements EventStorePersistence {
     @Override
     public void persistChanges(ChangeSet changeSet) 
             throws ConcurrencyException, DuplicateCommitException {
-        if (RESET.equals(changeSet.bucketId())) {
+        if (RESET.equals(changeSet.streamId())) {
             this.cleanup();
             return;
         }
@@ -62,7 +62,7 @@ public class MockPersistence implements EventStorePersistence {
     }
 
     public static ChangeSet resetCommand() {
-        return new TestChangeSet(RESET);
+        return new TestChangeSet("DEFAULT_BUCKET", RESET);
     }
     
 }

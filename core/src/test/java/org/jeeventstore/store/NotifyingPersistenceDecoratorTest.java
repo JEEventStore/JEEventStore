@@ -17,7 +17,6 @@ import org.testng.annotations.Test;
 
 /**
  *
- * @author Alexander Langer
  */
 public class NotifyingPersistenceDecoratorTest implements EventStorePersistence {
 
@@ -64,7 +63,7 @@ public class NotifyingPersistenceDecoratorTest implements EventStorePersistence 
                 this, new TestNotifier());
         assertNull(this.persistedChangeset);
         assertTrue(!this.received);
-        ChangeSet cs = new TestChangeSet("blabla");
+        ChangeSet cs = new TestChangeSet("TEST_BUCKET", "blabla");
         try {
             decorator.persistChanges(cs);
         } catch (ConcurrencyException e) { }
@@ -93,9 +92,9 @@ public class NotifyingPersistenceDecoratorTest implements EventStorePersistence 
             received = true;
         }
         @Override
-        public void addListener(EventStoreCommitListener listener) { }
+        public void addListener(String bucketId, EventStoreCommitListener listener) { }
         @Override
-        public void removeListener(EventStoreCommitListener listener) { }
+        public void removeListener(String bucketId, EventStoreCommitListener listener) { }
     }
     
     @Override

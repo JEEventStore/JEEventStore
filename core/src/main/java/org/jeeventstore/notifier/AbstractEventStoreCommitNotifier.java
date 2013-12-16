@@ -25,7 +25,9 @@ import org.jeeventstore.EventStoreCommitListener;
 import org.jeeventstore.EventStoreCommitNotifier;
 import org.jeeventstore.EventStoreCommitNotification;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import org.jeeventstore.ChangeSet;
@@ -36,26 +38,28 @@ import org.jeeventstore.ChangeSet;
 public abstract class AbstractEventStoreCommitNotifier 
         implements EventStoreCommitNotifier {
     
-    private List<EventStoreCommitListener> listeners = new ArrayList<>();
+    private final Map<String, List<EventStoreCommitListener>> listeners = new HashMap<>();
 
     @Override
     @Lock(LockType.WRITE)
-    public void addListener(EventStoreCommitListener listener) {
+    public void addListener(String bucketId, EventStoreCommitListener listener) {
         if (listener == null)
             throw new IllegalArgumentException("listener must not be null");
-        if (this.listeners.contains(listener))
+        List<EventStoreCommitListener> list = listFor(bucketId);
+        if (list.contains(listener))
             throw new IllegalStateException("Listener already listening.");
-        this.listeners.add(listener);
+        list.add(listener);
     }
 
     @Override
     @Lock(LockType.WRITE)
-    public void removeListener(EventStoreCommitListener listener) {
+    public void removeListener(String bucketId, EventStoreCommitListener listener) {
         if (listener == null)
             throw new IllegalArgumentException("listener must not be null");
-        if (!this.listeners.contains(listener))
+        List<EventStoreCommitListener> list = listFor(bucketId);
+        if (!list.contains(listener))
             throw new IllegalStateException("Listener not found.");
-        this.listeners.remove(listener);
+        list.remove(listener);
     }
 
     /**
@@ -65,7 +69,8 @@ public abstract class AbstractEventStoreCommitNotifier
      * @param notification The notification that the listeners shall receive.
      */
     protected void performNotification(EventStoreCommitNotification notification) {
-        for (EventStoreCommitListener l : listeners)
+        List<EventStoreCommitListener> list = listFor(notification.changes().bucketId());
+        for (EventStoreCommitListener l : list)
             l.receive(notification);
     }
 
@@ -78,6 +83,15 @@ public abstract class AbstractEventStoreCommitNotifier
     protected void performNotification(ChangeSet changeSet) {
         EventStoreCommitNotification notification = new DefaultCommitNotification(changeSet);
         this.performNotification(notification);
+    }
+
+    protected List<EventStoreCommitListener> listFor(String bucketId) {
+        List<EventStoreCommitListener> list = listeners.get(bucketId);
+        if (list == null) {
+            list = new ArrayList<>();
+            listeners.put(bucketId, list);
+        }
+        return list;
     }
 
 }

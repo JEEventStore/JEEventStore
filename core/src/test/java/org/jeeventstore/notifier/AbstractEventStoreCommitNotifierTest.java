@@ -20,11 +20,16 @@ public abstract class AbstractEventStoreCommitNotifierTest
         implements EventStoreCommitListener {
 
     public final static long WAIT_TIME = 1000l;
+    public final static String DEFAULT_BUCKET = "BUCKET_ID";
 
     protected abstract EventStoreCommitNotifier instance();
 
     protected ChangeSet changeSet(String id) {
-        return new TestChangeSet(id);
+        return changeSet(DEFAULT_BUCKET, id);
+    }
+
+    protected ChangeSet changeSet(String bucketId, String commitId) {
+        return new TestChangeSet(bucketId, commitId);
     }
 
     // these must be static to have them set from different threads
@@ -47,7 +52,7 @@ public abstract class AbstractEventStoreCommitNotifierTest
         caught = false;
         caughtCS = null;
         try {
-            this.instance().removeListener(this);
+            this.instance().removeListener(DEFAULT_BUCKET, this);
         } catch (Exception e) {
             // might happen, since we are just cleaning up
         }
@@ -59,15 +64,15 @@ public abstract class AbstractEventStoreCommitNotifierTest
     public void test_add_and_remove_listener_works() {
         this.clear();
         EventStoreCommitNotifier instance = this.instance();
-        instance.addListener(this);
-        instance.removeListener(this);
+        instance.addListener(DEFAULT_BUCKET, this);
+        instance.removeListener(DEFAULT_BUCKET, this);
     }
 
     @Test
     public void test_notification() {
         this.clear();
         EventStoreCommitNotifier instance = this.instance();
-        instance.addListener(this);
+        instance.addListener(DEFAULT_BUCKET, this);
         String id = UUID.randomUUID().toString();
         ChangeSet cs = changeSet(id);
         instance.notifyListeners(cs);
@@ -75,15 +80,15 @@ public abstract class AbstractEventStoreCommitNotifierTest
         // must have received by now
         assertTrue(caught);
         assertNotNull(caughtCS);
-        assertEquals(caughtCS.bucketId(), id);
+        assertEquals(caughtCS.streamId(), id);
     }
 
     @Test
     public void test_notification_after_removal() {
         this.clear();
         EventStoreCommitNotifier instance = this.instance();
-        instance.addListener(this);
-        instance.removeListener(this);
+        instance.addListener(DEFAULT_BUCKET, this);
+        instance.removeListener(DEFAULT_BUCKET, this);
         String id = UUID.randomUUID().toString();
         ChangeSet cs = changeSet(id);
         instance.notifyListeners(cs);
@@ -111,7 +116,7 @@ public abstract class AbstractEventStoreCommitNotifierTest
         this.clear();
         EventStoreCommitNotifier instance = this.instance();
         try {
-            instance.removeListener(this);
+            instance.removeListener(DEFAULT_BUCKET, this);
             fail("Should have failed by now");
         } catch (Exception e) {
             // ok
@@ -122,13 +127,44 @@ public abstract class AbstractEventStoreCommitNotifierTest
     public void test_multiple_add_fails() {
         this.clear();
         EventStoreCommitNotifier instance = this.instance();
-        instance.addListener(this);
+        instance.addListener(DEFAULT_BUCKET, this);
         try {
-            instance.addListener(this);
+            instance.addListener(DEFAULT_BUCKET, this);
             fail("Should have failed by now");
         } catch (Exception e) {
             // ok
         }
+    }
+
+    @Test
+    public void test_different_buckets() {
+        TestListener[] l = new TestListener[3];
+        for (int i = 0; i < 3; i++)
+            l[i] = new TestListener();
+        EventStoreCommitNotifier instance = this.instance();
+        instance.addListener("BUCKET1", l[0]);
+        instance.addListener("BUCKET1", l[2]);
+        instance.addListener("BUCKET2", l[1]);
+        instance.addListener("BUCKET2", l[2]);
+
+        ChangeSet cs1 = changeSet("BUCKET1", UUID.randomUUID().toString());
+        ChangeSet cs2 = changeSet("BUCKET2", UUID.randomUUID().toString());
+
+        instance.notifyListeners(cs1);
+        assertNotNull(l[0].notification);
+        assertEquals(l[0].notification.changes(), cs1);
+        assertTrue(l[1].notification == null);
+        assertNotNull(l[2].notification);
+        assertEquals(l[2].notification.changes(), cs1);
+
+        for (int i = 0; i < 3; i++)
+            l[0].notification = null;
+        instance.notifyListeners(cs2);
+        assertTrue(l[0].notification == null);
+        assertNotNull(l[1].notification);
+        assertEquals(l[1].notification.changes(), cs2);
+        assertNotNull(l[2].notification);
+        assertEquals(l[2].notification.changes(), cs2);
     }
 
     protected void sleep(long ms) {
