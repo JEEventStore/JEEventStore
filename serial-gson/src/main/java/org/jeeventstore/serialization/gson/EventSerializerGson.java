@@ -81,6 +81,7 @@ public class EventSerializerGson implements EventSerializer {
     public List<? extends Serializable> deserialize(String body) {
         if (body == null)
             throw new IllegalArgumentException("body must not be null");
+        log.log(Level.FINER, "deserializing body: " + body);
         return this.gson.fromJson(body, EventList.class).events();
     }
 
