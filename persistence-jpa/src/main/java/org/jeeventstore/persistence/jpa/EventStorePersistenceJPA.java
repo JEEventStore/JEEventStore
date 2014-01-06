@@ -53,8 +53,6 @@ import org.jeeventstore.EventSerializer;
  * {@code serializer} of type {@link EventSerializer} denotes the serialization
  *    strategy used to serialize objects before persisting them into the database
  * <p>
- * {@code entityManager} is the persistence context used to store events.
- * <p>
  * This EJB accepts the following configuration parameters:
  * <p>
  * Env-entry {@code fetchBatchSize} (optional, default: 500): The batch size for database fetches (number
@@ -64,8 +62,8 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
 
     private static final Logger log = Logger.getLogger(EventStorePersistenceJPA.class.getName());
  
-    // injected by deployment descriptor
-    private EntityManager entityManager;
+    @EJB(name="persistenceContextProvider")
+    private PersistenceContextProvider persistenceContextProvider;
 
     @EJB(name="serializer")
     private EventSerializer serializer;
@@ -103,7 +101,7 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
             throw new IllegalArgumentException("streamId must not be null");
 
         CriteriaQueryBuilder cqb = streamQueryBuilder(bucketId, streamId, 0, Long.MAX_VALUE);
-        return QueryUtils.countResults(entityManagerFor(bucketId), cqb) > 0;
+        return QueryUtils.countResults(entityManagerForReading(bucketId), cqb) > 0;
     }
 
     @Override
@@ -140,11 +138,15 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
     }
 
     protected void doPersist(String bucketId, EventStoreEntry entry) {
-        entityManagerFor(bucketId).persist(entry);
+        entityManagerForWriting(bucketId).persist(entry);
     }
 
-    protected EntityManager entityManagerFor(String bucketId) {
-        return this.entityManager;
+    protected EntityManager entityManagerForReading(String bucketId) {
+        return this.persistenceContextProvider.entityManagerForReading(bucketId);
+    }
+
+    protected EntityManager entityManagerForWriting(String bucketId) {
+        return this.persistenceContextProvider.entityManagerForWriting(bucketId);
     }
 
     protected CriteriaQueryBuilder allChangesQueryBuilder(final String bucketId) {
@@ -185,7 +187,7 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
     }
 
     protected Iterator<ChangeSet> fetchResults(String bucketId, CriteriaQueryBuilder cqb) {
-        return new LazyLoadIterator(entityManagerFor(bucketId), cqb, serializer)
+        return new LazyLoadIterator(entityManagerForReading(bucketId), cqb, serializer)
                 .setFetchBatchSize(fetchBatchSize);
     }
 
