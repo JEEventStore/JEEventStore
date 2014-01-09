@@ -94,6 +94,7 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
     }
 
     @Override
+    @TransactionAttribute(TransactionAttributeType.MANDATORY)
     public boolean existsStream(String bucketId, String streamId) {
         if (bucketId == null)
             throw new IllegalArgumentException("bucketId must not be null");
@@ -105,6 +106,7 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
     }
 
     @Override
+    @TransactionAttribute(TransactionAttributeType.MANDATORY)
     public void persistChanges(ChangeSet changeSet) throws ConcurrencyException, DuplicateCommitException {
         if (changeSet == null)
             throw new IllegalArgumentException("changeSet must not be null");
