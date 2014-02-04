@@ -55,6 +55,7 @@ public class EventSerializerGson implements EventSerializer {
     public void init() {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(EventList.class, new EventListTypeConverter());
+	builder.serializeSpecialFloatingPointValues(); // required to serialize Double.POSITIVE_INFINITY and others
 
         // register client's type adapters
         Iterator<EventSerializerGsonTypeConverter> convit = typeConverters.iterator();
