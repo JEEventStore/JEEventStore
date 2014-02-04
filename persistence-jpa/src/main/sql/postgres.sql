@@ -22,6 +22,10 @@ WITH (
   OIDS=FALSE
 );
 
+CREATE INDEX idx_bucket_id ON event_store(bucket_id);
+CREATE INDEX idx_stream_id ON event_store(stream_id);
+CREATE INDEX idx_stream_version ON event_store(stream_version);
+
 -- Set the owner to the correct user
 -- ALTER TABLE event_store_id_seq OWNER TO someusername;
 -- ALTER TABLE event_store OWNER TO someusername;
