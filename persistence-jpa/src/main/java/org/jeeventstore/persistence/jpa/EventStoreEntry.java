@@ -22,6 +22,7 @@
 package org.jeeventstore.persistence.jpa;
 
 import java.io.Serializable;
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,6 +36,7 @@ import javax.validation.constraints.NotNull;
 /**
  * JPA EventStore entry.
  */
+@Cacheable
 @Entity
 @Table(name = "event_store", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"bucket_id", "stream_id", "stream_version"}),
