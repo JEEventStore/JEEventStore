@@ -9,6 +9,6 @@ CREATE TABLE `event_store` (
   `body` longtext,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNQ_event_store_optimistic_lock` (`bucket_id`,`stream_id`,`stream_version`),
-  UNIQUE KEY `UNQ_event_store_change_set` (`change_set_id`)
+  UNIQUE KEY `UNQ_event_store_change_set` (`bucket_id`,`change_set_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 

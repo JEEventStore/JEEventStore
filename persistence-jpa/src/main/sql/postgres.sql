@@ -16,7 +16,7 @@ CREATE TABLE event_store (
   body text,
   CONSTRAINT event_store_pkey PRIMARY KEY (id),
   CONSTRAINT unq_event_store_optimistic_lock UNIQUE (bucket_id, stream_id, stream_version),
-  CONSTRAINT unq_event_store_change_set UNIQUE (change_set_id)
+  CONSTRAINT unq_event_store_change_set UNIQUE (bucket_id, change_set_id)
 )
 WITH (
   OIDS=FALSE
