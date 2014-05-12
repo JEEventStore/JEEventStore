@@ -86,7 +86,6 @@ public class PersistenceTestHelper {
     }
 
     public void test_allChanges_inorder() {
-        System.out.println("starteding test_allChanges_inorder");
         Iterator<ChangeSet> it = persistence.allChanges("DEFAULT");
         Map<String, Long> versions = new HashMap<>();
         int count = 0;
@@ -94,7 +93,6 @@ public class PersistenceTestHelper {
             ChangeSet cs = it.next();
             assertEquals(cs.bucketId(), "DEFAULT");
             Long lastVersion = versions.get(cs.streamId());
-            System.out.println ("Last in " + cs.streamId() + ": " + lastVersion + ", this: " + cs.streamVersion());
             if (lastVersion == null)
                 lastVersion = 0l;
             assertTrue(lastVersion <= cs.streamVersion());
