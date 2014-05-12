@@ -151,6 +151,7 @@ public abstract class AbstractEventStoreCommitNotifierTest
         ChangeSet cs2 = changeSet("BUCKET2", UUID.randomUUID().toString());
 
         instance.notifyListeners(cs1);
+        this.sleep(WAIT_TIME * 2);
         assertNotNull(l[0].notification);
         assertEquals(l[0].notification.changes(), cs1);
         assertTrue(l[1].notification == null);
@@ -160,6 +161,7 @@ public abstract class AbstractEventStoreCommitNotifierTest
         for (int i = 0; i < 3; i++)
             l[0].notification = null;
         instance.notifyListeners(cs2);
+        this.sleep(WAIT_TIME * 2);
         assertTrue(l[0].notification == null);
         assertNotNull(l[1].notification);
         assertEquals(l[1].notification.changes(), cs2);
