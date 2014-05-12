@@ -15,6 +15,24 @@
             <init-on-startup>true</init-on-startup>
         </session>
 
+       <session>
+            <ejb-name>SimplePersistenceContextProvider</ejb-name>
+            <business-local>org.jeeventstore.persistence.jpa.PersistenceContextProvider</business-local>
+            <ejb-class>org.jeeventstore.persistence.jpa.SimplePersistenceContextProvider</ejb-class>
+            <session-type>Singleton</session-type>
+            <init-on-startup>true</init-on-startup>
+            <persistence-context-ref>
+                <persistence-context-ref-name>entityManager</persistence-context-ref-name>
+                <persistence-unit-name>TestPU</persistence-unit-name>
+                <injection-target>
+                    <injection-target-class>
+                        org.jeeventstore.persistence.jpa.SimplePersistenceContextProvider
+                    </injection-target-class>
+                    <injection-target-name>entityManager</injection-target-name>
+                </injection-target>
+            </persistence-context-ref>
+        </session>
+
         <session>
             <ejb-name>EventStorePersistence</ejb-name>
             <business-local>org.jeeventstore.EventStorePersistence</business-local>
@@ -30,16 +48,6 @@
                 <local>org.jeeventstore.EventSerializer</local>
                 <ejb-link>EventSerializer</ejb-link>
             </ejb-local-ref>
-            <persistence-context-ref>
-                <persistence-context-ref-name>entityManager</persistence-context-ref-name>
-                <persistence-unit-name>TestPU</persistence-unit-name>
-                <injection-target>
-                    <injection-target-class>
-                        org.jeeventstore.persistence.jpa.EventStorePersistenceJPA
-                    </injection-target-class>
-                    <injection-target-name>entityManager</injection-target-name>
-                </injection-target>
-            </persistence-context-ref>
         </session>
 
     </enterprise-beans>
