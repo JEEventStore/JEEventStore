@@ -2,19 +2,15 @@ package org.jeeventstore.persistence;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.testng.Arquillian;
 import org.jeeventstore.ChangeSet;
 import org.jeeventstore.ConcurrencyException;
 import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.EventStorePersistence;
-import org.jeeventstore.TestUTF8Utils;
 import org.jeeventstore.store.DefaultChangeSet;
-import org.jeeventstore.util.IteratorUtils;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -126,58 +122,12 @@ public class AbstractPersistenceTest extends Arquillian {
 
     @Test
     public void test_large_event() {
-        String streamId = UUID.randomUUID().toString();
-
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < 15000 / 32; i++)
-            builder.append(UUID.randomUUID().toString());
-        String body = builder.toString();
-
-        store(streamId, streamId, body);
-        String result = (String) load(streamId, streamId);
-        assertEquals(body, result);
+        testHelper.test_large_event();
     }
 
-    /**
-     * Test against broken UTF8 encodings in the PostgreSQL/Hibernate combination,
-     * when the @Lob annotation is used.
-     * When database field is NOT of type TEXT 
-     * see https://hibernate.atlassian.net/browse/HHH-6127
-     */
     @Test
     public void test_utf8_chars() {
-        String streamId = UUID.randomUUID().toString();
-
-        String body = "ÜÄÖüäöß / " 
-                + TestUTF8Utils.unicodeString() + " / "
-                + TestUTF8Utils.utf8String();
-        store(streamId, streamId, body);
-        String result = (String) load(streamId, streamId);
-        TestUTF8Utils.println("####### Result as loaded from DB: " + result);
-        assertEquals(body, result);
-    }
-
-    private void store(String bucketId, String streamId, Serializable data) {
-        List<Serializable> events = new ArrayList<>();
-        events.add(data);
-        try {
-            ChangeSet cs = new DefaultChangeSet(
-                    bucketId, streamId, 1, 
-                    UUID.randomUUID().toString(),
-                    events);
-            persistence.persistChanges(cs);
-        } catch (ConcurrencyException | DuplicateCommitException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Serializable load(String bucketId, String streamId) {
-        List<ChangeSet> sets = testHelper.getFrom(streamId, streamId);
-        assertEquals(1, sets.size());
-        ChangeSet cs = sets.get(0);
-        List<Serializable> result = IteratorUtils.toList(cs.events());
-        assertEquals(1, result.size());
-        return result.get(0);
+        testHelper.test_utf8_chars();
     }
 
 }
