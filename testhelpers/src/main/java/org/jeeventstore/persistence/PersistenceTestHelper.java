@@ -3,8 +3,10 @@ package org.jeeventstore.persistence;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -16,9 +18,11 @@ import org.jeeventstore.ChangeSet;
 import org.jeeventstore.ConcurrencyException;
 import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.EventStorePersistence;
+import org.jeeventstore.TestUTF8Utils;
 import org.jeeventstore.store.DefaultChangeSet;
 import org.jeeventstore.util.IteratorUtils;
 import static org.testng.Assert.*;
+import org.testng.annotations.Test;
 
 /**
  *
@@ -82,14 +86,19 @@ public class PersistenceTestHelper {
     }
 
     public void test_allChanges_inorder() {
+        System.out.println("starteding test_allChanges_inorder");
         Iterator<ChangeSet> it = persistence.allChanges("DEFAULT");
+        Map<String, Long> versions = new HashMap<>();
         int count = 0;
-        long lastVersion = 0;
         while (it.hasNext()) {
             ChangeSet cs = it.next();
-            assertTrue(lastVersion <= cs.streamVersion());
             assertEquals(cs.bucketId(), "DEFAULT");
-            lastVersion = Math.max(lastVersion, cs.streamVersion());
+            Long lastVersion = versions.get(cs.streamId());
+            System.out.println ("Last in " + cs.streamId() + ": " + lastVersion + ", this: " + cs.streamVersion());
+            if (lastVersion == null)
+                lastVersion = 0l;
+            assertTrue(lastVersion <= cs.streamVersion());
+            versions.put(cs.streamId(), cs.streamVersion());
             count++;
         }
         assertEquals(count, data_default.size());
@@ -131,7 +140,38 @@ public class PersistenceTestHelper {
         }
     }
 
-    public List<ChangeSet> getFrom(String bucketId, String streamId) {
+    public void test_large_event() {
+        String streamId = UUID.randomUUID().toString();
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 15000 / 32; i++)
+            builder.append(UUID.randomUUID().toString());
+        String body = builder.toString();
+
+        store(streamId, streamId, body);
+        String result = (String) load(streamId, streamId);
+        assertEquals(body, result);
+    }
+
+    /**
+     * Test against broken UTF8 encodings in the PostgreSQL/Hibernate combination,
+     * when the @Lob annotation is used.
+     * When database field is NOT of type TEXT 
+     * see https://hibernate.atlassian.net/browse/HHH-6127
+     */
+    public void test_utf8_chars() {
+        String streamId = UUID.randomUUID().toString();
+
+        String body = "ÜÄÖüäöß / " 
+                + TestUTF8Utils.unicodeString() + " / "
+                + TestUTF8Utils.utf8String();
+        store(streamId, streamId, body);
+        String result = (String) load(streamId, streamId);
+        TestUTF8Utils.println("####### Result as loaded from DB: " + result);
+        assertEquals(body, result);
+    }
+
+    private List<ChangeSet> getFrom(String bucketId, String streamId) {
         assertTrue(persistence.existsStream(bucketId, streamId));
         Iterator<ChangeSet> it = persistence.getFrom(bucketId, streamId, 0, Long.MAX_VALUE);
         return IteratorUtils.toList(it);
@@ -151,6 +191,29 @@ public class PersistenceTestHelper {
         int min = Math.min(res.size(), (int) minVersion + 1);
         int max = Math.min(res.size(), (int) maxVersion + 1);
         return res.subList(min, max);
+    }
+
+    private void store(String bucketId, String streamId, Serializable data) {
+        List<Serializable> events = new ArrayList<>();
+        events.add(data);
+        try {
+            ChangeSet cs = new DefaultChangeSet(
+                    bucketId, streamId, 1, 
+                    UUID.randomUUID().toString(),
+                    events);
+            persistence.persistChanges(cs);
+        } catch (ConcurrencyException | DuplicateCommitException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Serializable load(String bucketId, String streamId) {
+        List<ChangeSet> sets = getFrom(streamId, streamId);
+        assertEquals(1, sets.size());
+        ChangeSet cs = sets.get(0);
+        List<Serializable> result = IteratorUtils.toList(cs.events());
+        assertEquals(1, result.size());
+        return result.get(0);
     }
 
     private void compare(Iterator<ChangeSet> it, List<ChangeSet> data, boolean deepverify) {
