@@ -4,9 +4,13 @@
 *.war
 *.ear
 nbactions.xml
-/core/target/
-/persistence-jpa/target/
-/serial-gson/target/
 /target/
 /testutils/target/
 /testhelpers/target/
+/core/target/
+/core-sync-ejb/target/
+/core-async-ejb/target/
+/persistence-jpa/target/
+/persistence-jpa-ejb/target/
+/serial-gson/target/
+/serial-gson-ejb/target/

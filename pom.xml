@@ -14,8 +14,12 @@
         <module>testutils</module>
         <module>testhelpers</module>
         <module>core</module>
+        <module>core-async-ejb</module>
+        <module>core-sync-ejb</module>
         <module>serial-gson</module>
+        <module>serial-gson-ejb</module>
         <module>persistence-jpa</module>
+        <module>persistence-jpa-ejb</module>
         <!--module>persistence-memory</module-->
     </modules>
 
@@ -24,6 +28,7 @@
         <maven.compiler.target>1.7</maven.compiler.target>
         <maven.compiler.source>1.7</maven.compiler.source>
         <version.compiler.plugin>2.3.1</version.compiler.plugin>
+        <version.ejb.plugin>2.3</version.ejb.plugin>
 
         <!-- Tests -->
         <version.testng>6.8</version.testng>
@@ -145,6 +150,19 @@
     </dependencyManagement>
 
     <build>
+
+        <plugins>
+            <!-- Configure the maven-ejb-plugin to use EJB 3.1 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ejb-plugin</artifactId>
+                <version>${version.ejb.plugin}</version>
+                <configuration>
+                    <ejbVersion>3.1</ejbVersion>
+                </configuration>
+            </plugin>
+        </plugins>
+
         <pluginManagement>
             <plugins>
 

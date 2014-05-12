@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns="http://java.sun.com/xml/ns/javaee" 
+    xmlns:ejb="http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd" 
+    version="3.1">
+
+    <enterprise-beans>    
+
+        <session>
+            <ejb-name>EventStoreCommitNotifier</ejb-name>
+            <business-local>org.jeeventstore.EventStoreCommitNotifier</business-local>
+            <ejb-class>org.jeeventstore.notifier.AsyncEventStoreCommitNotifier</ejb-class>
+            <session-type>Singleton</session-type>
+            <init-on-startup>true</init-on-startup>
+        </session>  
+
+        <session>
+            <ejb-name>EventStore</ejb-name>
+            <business-local>org.jeeventstore.EventStore</business-local>
+            <ejb-class>org.jeeventstore.store.OptimisticEventStoreService</ejb-class>
+            <session-type>Stateless</session-type>
+            <ejb-local-ref>
+                <ejb-ref-name>persistence</ejb-ref-name>
+                <ejb-ref-type>Session</ejb-ref-type>
+                <local>org.jeeventstore.EventStorePersistence</local>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>commitNotifier</ejb-ref-name>
+                <local>org.jeeventstore.EventStoreCommitNotifier</local>
+                <ejb-link>EventStoreCommitNotifier</ejb-link>
+            </ejb-local-ref>
+        </session>
+
+    </enterprise-beans>
+
+</ejb-jar>

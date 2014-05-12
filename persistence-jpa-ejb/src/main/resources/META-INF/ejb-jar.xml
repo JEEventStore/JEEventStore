@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns="http://java.sun.com/xml/ns/javaee" 
+    xmlns:ejb="http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd" 
+    version="3.1">
+
+    <enterprise-beans>    
+
+        <session>
+            <ejb-name>JEEventStorePersistence</ejb-name>
+            <business-local>org.jeeventstore.EventStorePersistence</business-local>
+            <ejb-class>org.jeeventstore.persistence.jpa.EventStorePersistenceJPA</ejb-class>
+            <session-type>Stateless</session-type>
+            <ejb-local-ref>
+                <ejb-ref-name>serializer</ejb-ref-name>
+                <ejb-ref-type>Session</ejb-ref-type>
+                <local>org.jeeventstore.EventSerializer</local>
+            </ejb-local-ref>
+        </session>
+
+    </enterprise-beans>
+
+</ejb-jar>
