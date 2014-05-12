@@ -140,7 +140,10 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
     }
 
     protected void doPersist(String bucketId, EventStoreEntry entry) {
-        entityManagerForWriting(bucketId).persist(entry);
+        EntityManager em = entityManagerForWriting(bucketId);
+        em.persist(entry);
+        // MySQL requires a flush, as otherwise the autoincrement_ids are not in expected order
+        em.flush();
     }
 
     protected EntityManager entityManagerForReading(String bucketId) {
