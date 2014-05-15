@@ -35,8 +35,6 @@ import org.jeeventstore.EventSerializer;
  * A simple serializer for tests using the Object*Stream api.
  * Encodes the serialized stream as Base64, which makes
  * the output hard to parse.
- * 
- * @author Alexander Langer
  */
 public class JavaSerializer implements EventSerializer {
 
