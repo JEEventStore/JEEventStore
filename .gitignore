@@ -1,4 +1,6 @@
 *.class
+pom.xml.versionsBackup
+derby.log
 # Package Files #
 *.jar
 *.war
