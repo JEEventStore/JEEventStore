@@ -7,6 +7,7 @@ JEEventStore
 
 ### Relational Databases
 [Complete] JPA 2.0 (any supported database)
+
 [Planned] JPA 2.0 w/ Master (writes) / Slave (reads) support
 
 ### Document Databases
@@ -16,13 +17,6 @@ JEEventStore
 [Planned] File based storage
 [Planned] In-memory
 
-### Dynamo Clones
-[Planned] Riak  
-
-### KV Stores / NoSQL
-[Planned] Redis  
-[Planned] Memcached
-
 ## Supported Serialization Engines
 
 ### Raw Serializers
@@ -30,4 +24,5 @@ JEEventStore
 
 ### Hooks
 [Planned] Memcached deserialization cache
-[Planned] Encryption
+
+[Planned] Encryption layer
