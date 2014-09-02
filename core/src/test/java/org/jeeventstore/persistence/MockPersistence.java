@@ -28,6 +28,7 @@ import org.jeeventstore.ChangeSet;
 import org.jeeventstore.ConcurrencyException;
 import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.EventStorePersistence;
+import org.jeeventstore.StreamNotFoundException;
 import org.jeeventstore.store.TestChangeSet;
 
 public class MockPersistence implements EventStorePersistence {
@@ -48,7 +49,8 @@ public class MockPersistence implements EventStorePersistence {
     }
 
     @Override
-    public Iterator<ChangeSet> getFrom(String bucketId, String streamId, long minVersion, long maxVersion) {
+    public Iterator<ChangeSet> getFrom(String bucketId, String streamId, long minVersion, long maxVersion) 
+            throws StreamNotFoundException {
         if (maxVersion == Long.MAX_VALUE)
             maxVersion = Integer.MAX_VALUE;
         int max = Math.min(changeSets.size(), (int) maxVersion);

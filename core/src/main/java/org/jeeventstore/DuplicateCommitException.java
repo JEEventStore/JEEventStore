@@ -21,6 +21,8 @@
 
 package org.jeeventstore;
 
+import javax.ejb.ApplicationException;
+
 /**
  * An exception that occurs when there is an attempt to commit the same
  * set of changes more than once.

@@ -32,6 +32,7 @@ import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.EventStoreCommitListener;
 import org.jeeventstore.EventStoreCommitNotifier;
 import org.jeeventstore.EventStorePersistence;
+import org.jeeventstore.StreamNotFoundException;
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -69,7 +70,7 @@ public class NotifyingPersistenceDecoratorTest implements EventStorePersistence 
     }
 
     @Test
-    public void test_getFrom() {
+    public void test_getFrom() throws StreamNotFoundException {
         NotifyingPersistenceDecorator decorator = new NotifyingPersistenceDecorator(this, null);
         assertNull(this.changeSetIterator);
         assertEquals(decorator.getFrom(null, null, 0, Long.MAX_VALUE), this.changeSetIterator);

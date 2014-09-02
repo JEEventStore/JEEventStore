@@ -26,6 +26,7 @@ import javax.ejb.EJB;
 import org.jeeventstore.EventStoreCommitNotifier;
 import org.jeeventstore.EventStorePersistence;
 import org.jeeventstore.ReadableEventStream;
+import org.jeeventstore.StreamNotFoundException;
 import org.jeeventstore.WritableEventStream;
 
 /**
@@ -60,12 +61,14 @@ public class OptimisticEventStoreService implements EventStore {
     private EventStorePersistence persistence;
 
     @Override
-    public ReadableEventStream openStreamForReading(String bucketId, String streamId) {
+    public ReadableEventStream openStreamForReading(String bucketId, String streamId)
+            throws StreamNotFoundException {
         return this.openStreamForReading(bucketId, streamId, Long.MAX_VALUE);
     }
 
     @Override
-    public ReadableEventStream openStreamForReading(String bucketId, String streamId, long version) {
+    public ReadableEventStream openStreamForReading(String bucketId, String streamId, long version)
+            throws StreamNotFoundException {
         return OptimisticEventStream.createReadable(bucketId, streamId, version, persistence);
     }
 
@@ -73,6 +76,7 @@ public class OptimisticEventStoreService implements EventStore {
     public WritableEventStream createStream(String bucketId, String streamId) {
         return this.openStreamForWriting(bucketId, streamId, 0l);
     }
+
     @Override
     public WritableEventStream openStreamForWriting(
             String bucketId, String streamId, long version) {

@@ -129,19 +129,10 @@ public class OptimisticEventStoreServiceTest extends Arquillian
         assertEquals(res.version(), 10);
     }
 
-    @Test 
-    public void test_openStreamForReading_nonexistent() throws Exception {
+    @Test(expectedExceptions = StreamNotFoundException.class)
+    public void test_openStreamForReading_nonexistent() throws StreamNotFoundException {
         cleanup();
-        try {
-            eventStore.openStreamForReading("", "");
-            fail("Should have failed by now");
-        } catch (EJBException e) {
-            if (e.getCause().getClass().equals(StreamNotFoundException.class)) {
-                // ok
-            } else {
-                throw e;
-            }
-        }
+        eventStore.openStreamForReading("", "");
     }
     
     @Test

@@ -101,10 +101,11 @@ final class OptimisticEventStream
             String bucketId,
             String streamId, 
             long version,
-            EventStorePersistence persistence) {
+            EventStorePersistence persistence) throws StreamNotFoundException {
 
         OptimisticEventStream oes = new OptimisticEventStream(bucketId, streamId, 0, persistence);
-        oes.populateToVersion(version);
+        Iterator<ChangeSet> changes = oes.queryCommitsToVersion(version);
+        oes.populateWith(changes);
         if (oes.committedChanges.isEmpty())
             throw new StreamNotFoundException();
         return oes;
@@ -124,7 +125,7 @@ final class OptimisticEventStream
             String bucketId,
             String streamId, 
             long version,
-            EventStorePersistence persistence) {
+            EventStorePersistence persistence) throws StreamNotFoundException {
         
         return createReadWritable(bucketId, streamId, version, persistence);
     }
@@ -201,15 +202,12 @@ final class OptimisticEventStream
     }
 
     /**
-     * Queries the persistence layer to populate the stream up until version
-     * {@code version}.
+     * Queries the persistence layer for the stream up until version {@code version}.
      * 
      * @param version  the maximum version to retrieve
      */
-    protected void populateToVersion(long version) {
-        Iterator<ChangeSet> commits = persistence.getFrom(
-                bucketId, streamId, this.version, version);
-        this.populateWith(commits);
+    protected Iterator<ChangeSet> queryCommitsToVersion(long version) throws StreamNotFoundException {
+        return persistence.getFrom(bucketId, streamId, this.version, version);
     }
 
     private void populateWith(Iterator<? extends ChangeSet> changes) {

@@ -27,6 +27,7 @@ import org.jeeventstore.ChangeSet;
 import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.EventStoreCommitNotifier;
 import org.jeeventstore.EventStorePersistence;
+import org.jeeventstore.StreamNotFoundException;
 
 /**
  * A decorator for {@link EventStorePersistence} that initiates a notification
@@ -56,7 +57,8 @@ public class NotifyingPersistenceDecorator implements EventStorePersistence {
     }
 
     @Override
-    public Iterator<ChangeSet> getFrom(String bucketId, String streamId, long minVersion, long maxVersion) {
+    public Iterator<ChangeSet> getFrom(String bucketId, String streamId, long minVersion, long maxVersion) 
+            throws StreamNotFoundException {
         return persistence.getFrom(bucketId, streamId, minVersion, maxVersion);
     }
 

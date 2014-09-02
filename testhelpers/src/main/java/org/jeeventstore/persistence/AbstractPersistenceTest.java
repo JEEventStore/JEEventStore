@@ -31,6 +31,7 @@ import org.jeeventstore.ChangeSet;
 import org.jeeventstore.ConcurrencyException;
 import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.EventStorePersistence;
+import org.jeeventstore.StreamNotFoundException;
 import org.jeeventstore.store.DefaultChangeSet;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -58,12 +59,12 @@ public class AbstractPersistenceTest extends Arquillian {
     }
 
     @Test
-    public void test_getFrom_regular() {
+    public void test_getFrom_regular() throws StreamNotFoundException {
         testHelper.test_getFrom_regular();
     }
 
     @Test
-    public void test_getFrom_substream() {
+    public void test_getFrom_substream() throws StreamNotFoundException {
         testHelper.test_getFrom_substream();
     }
 
@@ -107,7 +108,7 @@ public class AbstractPersistenceTest extends Arquillian {
     }
 
     @Test
-    public void test_getFrom_nullarg() {
+    public void test_getFrom_nullarg() throws StreamNotFoundException {
         testHelper.test_getFrom_nullarg();
     }
 

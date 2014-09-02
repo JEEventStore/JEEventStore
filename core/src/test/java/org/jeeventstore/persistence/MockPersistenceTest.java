@@ -28,6 +28,7 @@ import java.util.UUID;
 import org.jeeventstore.ChangeSet;
 import org.jeeventstore.ConcurrencyException;
 import org.jeeventstore.DuplicateCommitException;
+import org.jeeventstore.StreamNotFoundException;
 import org.jeeventstore.store.DefaultChangeSet;
 import org.jeeventstore.store.TestUtils;
 import static org.testng.Assert.*;
@@ -60,27 +61,27 @@ public class MockPersistenceTest {
     }
 
     @Test
-    public void test_getFromZero() {
+    public void test_getFromZero() throws StreamNotFoundException {
         Iterator<ChangeSet> it = persistence.getFrom("", "", 0, 10);
         verify(it, 1, 10);
         assertTrue(!it.hasNext());
     }
 
     @Test
-    public void test_getAllFromZero() {
+    public void test_getAllFromZero() throws StreamNotFoundException {
         Iterator<ChangeSet> it = persistence.getFrom("", "", 0, Integer.MAX_VALUE);
         verify(it, 1, 100);
         assertTrue(!it.hasNext());
     }
 
     @Test
-    public void test_getFrom() {
+    public void test_getFrom() throws StreamNotFoundException {
         Iterator<ChangeSet> it = persistence.getFrom("", "", 34, 57);
         verify(it, 35, 57);
     }
 
     @Test
-    public void test_getFrom_Max() {
+    public void test_getFrom_Max() throws StreamNotFoundException {
         Iterator<ChangeSet> it = persistence.getFrom("", "", 34, Integer.MAX_VALUE);
         verify(it, 35, 100);
         assertTrue(!it.hasNext());

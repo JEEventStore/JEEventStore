@@ -28,6 +28,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jeeventstore.StreamNotFoundException;
 import org.jeeventstore.TestUTF8Utils;
 import org.jeeventstore.persistence.AbstractPersistenceTest;
 import org.jeeventstore.serialization.XMLSerializer;
@@ -57,7 +58,7 @@ public class EventStorePersistenceJPATest extends AbstractPersistenceTest {
     }
 
     @Test
-    public void test_transaction_required() {
+    public void test_transaction_required() throws StreamNotFoundException {
         try {
             getPersistence().allChanges("TEST");
             fail("Should have failed by now");

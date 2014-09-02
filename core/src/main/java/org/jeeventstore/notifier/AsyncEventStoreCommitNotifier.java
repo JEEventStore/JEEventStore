@@ -118,6 +118,9 @@ public class AsyncEventStoreCommitNotifier
             timer.cancel();
         } catch (Exception e) {
             log.info("Error performing notification: " + e.getMessage());
+            // if the timer was canceled, this is no problem (on busy loads, it
+            // might happen that the timer is reschudeled shortly after it was
+            // canceled; in either case, canceled means the listeners have been notified.
         }
     }
     

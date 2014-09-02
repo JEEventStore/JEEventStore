@@ -77,7 +77,7 @@ public interface EventStorePersistence {
             String bucketId,
             String streamId,
             long minVersion,
-            long maxVersion);
+            long maxVersion) throws StreamNotFoundException;
 
     /**
      * Persists the given {@link ChangeSet} to the durable storage.

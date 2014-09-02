@@ -21,6 +21,8 @@
 
 package org.jeeventstore;
 
+import javax.ejb.ApplicationException;
+
 /**
  * An exception that is thrown when there is an optimistic concurrency conflict
  * between multiple writers.

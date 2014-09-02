@@ -46,7 +46,8 @@ public interface EventStore {
      * @return  the requested event stream as readable event stream
      * @throws StreamNotFoundException  if a stream with the given identifier cannot be found in the bucket
      */
-    ReadableEventStream openStreamForReading(String bucketId, String streamId);
+    ReadableEventStream openStreamForReading(String bucketId, String streamId)
+            throws StreamNotFoundException;
 
     /**
      * Opens the stream identified by {@code streamId} in the
@@ -62,7 +63,8 @@ public interface EventStore {
      * @return  the requested event stream as readable event stream
      * @throws StreamNotFoundException  if a stream with the given identifier cannot be found in the bucket
      */
-    ReadableEventStream openStreamForReading(String bucketId, String streamId, long maxVersion);
+    ReadableEventStream openStreamForReading(String bucketId, String streamId, long maxVersion)
+            throws StreamNotFoundException;
 
     /**
      * Creates a new stream with identifier {@code streamId} in the bucket

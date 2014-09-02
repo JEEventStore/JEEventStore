@@ -24,7 +24,7 @@ package org.jeeventstore;
 /**
  * An exception that occurs when a specified stream does not exist.
  */
-public class StreamNotFoundException extends RuntimeException {
+public class StreamNotFoundException extends Exception {
 
     public StreamNotFoundException() {
     }

@@ -70,7 +70,7 @@ public class OptimisticEventStreamTest {
     }
 
     @Test
-    public void test_create_readable() {
+    public void test_create_readable() throws StreamNotFoundException {
         assertNotNull(persistence);
         ReadableEventStream oes = OptimisticEventStream.createReadable(BUCKET_ID, STREAM_ID, 28l, persistence);
         assertEquals(oes.bucketId(), BUCKET_ID);
@@ -79,7 +79,7 @@ public class OptimisticEventStreamTest {
     }
 
     @Test
-    public void test_create_readwritable() {
+    public void test_create_readwritable() throws StreamNotFoundException {
         assertNotNull(persistence);
         ReadWriteEventStream oes = OptimisticEventStream.createReadWritable(
                 BUCKET_ID, STREAM_ID, 28l, persistence);
@@ -88,32 +88,27 @@ public class OptimisticEventStreamTest {
         assertEquals(28l, oes.version());
     }
 
-    @Test
-    public void test_readable_nonexistent() throws Exception {
+    @Test(expectedExceptions = StreamNotFoundException.class)
+    public void test_readable_nonexistent() throws ConcurrencyException, DuplicateCommitException, StreamNotFoundException {
         persistence.persistChanges(MockPersistence.resetCommand());
-        try {
-            ReadableEventStream oes = OptimisticEventStream.createReadable("wrong", "stream", 28l, persistence);
-            fail("Should have failed by now");
-        } catch (StreamNotFoundException e) {
-            // ok
-        }
+        ReadableEventStream oes = OptimisticEventStream.createReadable("wrong", "stream", 28l, persistence);
     }
 
     @Test
-    public void test_read_max_version() {
+    public void test_read_max_version() throws StreamNotFoundException {
         ReadableEventStream oes = OptimisticEventStream.createReadable(BUCKET_ID, STREAM_ID,
                 Integer.MAX_VALUE, persistence);
         compareData(new EventsIterator(data.iterator()), oes.events());
     }
 
     @Test
-    public void test_read_intermediate_version() {
+    public void test_read_intermediate_version() throws StreamNotFoundException {
         ReadableEventStream oes = OptimisticEventStream.createReadable(BUCKET_ID, STREAM_ID, 56, persistence);
         compareData(new EventsIterator(data.subList(0, 56).iterator()), oes.events());
     }
 
     @Test
-    public void test_invalid_persistence_getFrom() {
+    public void test_invalid_persistence_getFrom() throws StreamNotFoundException {
         // create an invalid persistence
         List<ChangeSet> invalid = TestUtils.createChangeSets(BUCKET_ID, STREAM_ID, 2, 10);
         for(ChangeSet cs: invalid) {
@@ -313,7 +308,7 @@ public class OptimisticEventStreamTest {
         List<Serializable> persistedEvents = IteratorUtils.toList(persistedCS.events());
         assertEquals(expectedEvents, persistedEvents);
     }
-            
+
     private long number_of_persisted_changesets() {
         Iterator<ChangeSet> allit = persistence.allChanges(BUCKET_ID);
         List<ChangeSet> all = IteratorUtils.toList(allit);

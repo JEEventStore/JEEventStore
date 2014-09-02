@@ -41,6 +41,7 @@ import org.jeeventstore.ConcurrencyException;
 import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.EventStorePersistence;
 import org.jeeventstore.EventSerializer;
+import org.jeeventstore.StreamNotFoundException;
 
 /**
  * EventStorePersistence utilizing JPA.  
@@ -83,7 +84,7 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
     @TransactionAttribute(TransactionAttributeType.MANDATORY)
     public Iterator<ChangeSet> getFrom(
             final String bucketId, final String streamId,
-            final long minVersion, final long maxVersion) {
+            final long minVersion, final long maxVersion) throws StreamNotFoundException {
         
         if (bucketId == null)
             throw new IllegalArgumentException("bucketId must not be null");
@@ -144,6 +145,7 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
         em.persist(entry);
         // MySQL requires a flush, as otherwise the autoincrement_ids are not in expected order
         em.flush();
+        //em.clear(); // detach entities, pollutes the heap
     }
 
     protected EntityManager entityManagerForReading(String bucketId) {

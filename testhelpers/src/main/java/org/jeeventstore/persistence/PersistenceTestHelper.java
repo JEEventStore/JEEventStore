@@ -39,11 +39,11 @@ import org.jeeventstore.ChangeSet;
 import org.jeeventstore.ConcurrencyException;
 import org.jeeventstore.DuplicateCommitException;
 import org.jeeventstore.EventStorePersistence;
+import org.jeeventstore.StreamNotFoundException;
 import org.jeeventstore.TestUTF8Utils;
 import org.jeeventstore.store.DefaultChangeSet;
 import org.jeeventstore.util.IteratorUtils;
 import static org.testng.Assert.*;
-import org.testng.annotations.Test;
 
 @Singleton
 @LocalBean
@@ -120,13 +120,13 @@ public class PersistenceTestHelper {
         assertEquals(count, data_default.size());
     }
 
-    public void test_getFrom_regular() {
+    public void test_getFrom_regular() throws StreamNotFoundException {
         List<ChangeSet> expected = filter("DEFAULT", "TEST_45", 0, Long.MAX_VALUE);
         Iterator<ChangeSet> have = persistence.getFrom("DEFAULT", "TEST_45", 0, Long.MAX_VALUE);
         compare(have, expected, true);
     }
 
-    public void test_getFrom_substream() {
+    public void test_getFrom_substream() throws StreamNotFoundException {
         List<ChangeSet> expected = filter("DEFAULT", "TEST_65", 4, 10);
         Iterator<ChangeSet> have = persistence.getFrom("DEFAULT", "TEST_65", 4, 10);
         compare(have, expected, true);
@@ -141,7 +141,7 @@ public class PersistenceTestHelper {
         }
     }
 
-    public void test_getFrom_nullarg() {
+    public void test_getFrom_nullarg() throws StreamNotFoundException {
         try {
             persistence.getFrom(null, "TEST", 0, Long.MAX_VALUE);
             fail("Should have failed by now");
@@ -187,7 +187,7 @@ public class PersistenceTestHelper {
         assertEquals(body, result);
     }
 
-    private List<ChangeSet> getFrom(String bucketId, String streamId) {
+    private List<ChangeSet> getFrom(String bucketId, String streamId) throws StreamNotFoundException {
         assertTrue(persistence.existsStream(bucketId, streamId));
         Iterator<ChangeSet> it = persistence.getFrom(bucketId, streamId, 0, Long.MAX_VALUE);
         return IteratorUtils.toList(it);
@@ -224,12 +224,16 @@ public class PersistenceTestHelper {
     }
 
     private Serializable load(String bucketId, String streamId) {
-        List<ChangeSet> sets = getFrom(streamId, streamId);
-        assertEquals(1, sets.size());
-        ChangeSet cs = sets.get(0);
-        List<Serializable> result = IteratorUtils.toList(cs.events());
-        assertEquals(1, result.size());
-        return result.get(0);
+        try {
+            List<ChangeSet> sets = getFrom(streamId, streamId);
+            assertEquals(1, sets.size());
+            ChangeSet cs = sets.get(0);
+            List<Serializable> result = IteratorUtils.toList(cs.events());
+            assertEquals(1, result.size());
+            return result.get(0);
+        } catch (StreamNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void compare(Iterator<ChangeSet> it, List<ChangeSet> data, boolean deepverify) {
