@@ -145,7 +145,7 @@ public class EventStorePersistenceJPA implements EventStorePersistence {
         em.persist(entry);
         // MySQL requires a flush, as otherwise the autoincrement_ids are not in expected order
         em.flush();
-        //em.clear(); // detach entities, pollutes the heap
+        em.clear(); // detach entities, pollutes the heap
     }
 
     protected EntityManager entityManagerForReading(String bucketId) {
