@@ -45,7 +45,7 @@ public abstract class AbstractEventStoreCommitNotifier
     public void addListener(String bucketId, EventStoreCommitListener listener) {
         if (listener == null)
             throw new IllegalArgumentException("listener must not be null");
-        List<EventStoreCommitListener> list = listFor(bucketId);
+        List<EventStoreCommitListener> list = listFor(bucketId, true);
         if (list.contains(listener))
             throw new IllegalStateException("Listener already listening.");
         list.add(listener);
@@ -56,8 +56,8 @@ public abstract class AbstractEventStoreCommitNotifier
     public void removeListener(String bucketId, EventStoreCommitListener listener) {
         if (listener == null)
             throw new IllegalArgumentException("listener must not be null");
-        List<EventStoreCommitListener> list = listFor(bucketId);
-        if (!list.contains(listener))
+        List<EventStoreCommitListener> list = listFor(bucketId, false);
+        if (list == null || !list.contains(listener))
             throw new IllegalStateException("Listener not found.");
         list.remove(listener);
     }
@@ -69,7 +69,9 @@ public abstract class AbstractEventStoreCommitNotifier
      * @param notification The notification that the listeners shall receive.
      */
     protected void performNotification(EventStoreCommitNotification notification) {
-        List<EventStoreCommitListener> list = listFor(notification.changes().bucketId());
+        List<EventStoreCommitListener> list = listFor(notification.changes().bucketId(), false);
+        if (list == null)
+            return;
         for (EventStoreCommitListener l : list)
             l.receive(notification);
     }
@@ -85,9 +87,9 @@ public abstract class AbstractEventStoreCommitNotifier
         this.performNotification(notification);
     }
 
-    protected List<EventStoreCommitListener> listFor(String bucketId) {
+    protected List<EventStoreCommitListener> listFor(String bucketId, boolean create) {
         List<EventStoreCommitListener> list = listeners.get(bucketId);
-        if (list == null) {
+        if (list == null && create) {
             list = new ArrayList<>();
             listeners.put(bucketId, list);
         }
