@@ -27,3 +27,4 @@ JEEventStore
 [Planned] Memcached deserialization cache
 
 [Planned] Encryption layer
+
