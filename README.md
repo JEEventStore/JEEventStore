@@ -15,6 +15,7 @@ JEEventStore
 
 ### Other
 [Planned] File based storage
+
 [Planned] In-memory
 
 ## Supported Serialization Engines
