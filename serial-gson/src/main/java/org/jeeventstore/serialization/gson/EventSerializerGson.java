@@ -51,12 +51,11 @@ public class EventSerializerGson implements EventSerializer {
     @Inject
     private Instance<EventSerializerGsonTypeConverter> typeConverters;
 
+    // static function fuer builder creation, so dass ich das in tests nutzen kann.
+
     @PostConstruct
     public void init() {
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(EventList.class, new EventListTypeConverter());
-	builder.serializeSpecialFloatingPointValues(); // required to serialize Double.POSITIVE_INFINITY and others
-        builder.setDateFormat("yyyy-MM-dd HH:mm:ss.SSS"); // granularity of 1 ms
+        GsonBuilder builder = createBuilder();
 
         // register client's type adapters
         Iterator<EventSerializerGsonTypeConverter> convit = typeConverters.iterator();
@@ -85,6 +84,18 @@ public class EventSerializerGson implements EventSerializer {
             throw new IllegalArgumentException("body must not be null");
         log.log(Level.FINER, "deserializing body: " + body);
         return this.gson.fromJson(body, EventList.class).events();
+    }
+
+    /**
+     * Create the underlying GsonBuilder.
+     * Added here to test proper serialization in integration tests.
+     */
+    public static GsonBuilder createBuilder() {
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(EventList.class, new EventListTypeConverter());
+	builder.serializeSpecialFloatingPointValues(); // required to serialize Double.POSITIVE_INFINITY and others
+        builder.setDateFormat("yyyy-MM-dd HH:mm:ss.SSS"); // granularity of 1 ms
+        return builder;
     }
 
 }
