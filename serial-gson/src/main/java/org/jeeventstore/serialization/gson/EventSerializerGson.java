@@ -94,6 +94,7 @@ public class EventSerializerGson implements EventSerializer {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(EventList.class, new EventListTypeConverter());
 	builder.serializeSpecialFloatingPointValues(); // required to serialize Double.POSITIVE_INFINITY and others
+        builder.enableComplexMapKeySerialization(); // required to properly serialize maps
         builder.setDateFormat("yyyy-MM-dd HH:mm:ss.SSS"); // granularity of 1 ms
         return builder;
     }
