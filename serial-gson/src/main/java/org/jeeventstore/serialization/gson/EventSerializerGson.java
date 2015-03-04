@@ -49,7 +49,7 @@ public class EventSerializerGson implements EventSerializer {
      * This searches the class path and lists all custom converters.
      */
     @Inject
-    private Instance<EventSerializerGsonTypeConverter> typeConverters;
+    private Instance<EventSerializerGsonTypeConverter<?>> typeConverters;
 
     // static function fuer builder creation, so dass ich das in tests nutzen kann.
 
@@ -58,9 +58,9 @@ public class EventSerializerGson implements EventSerializer {
         GsonBuilder builder = createBuilder();
 
         // register client's type adapters
-        Iterator<EventSerializerGsonTypeConverter> convit = typeConverters.iterator();
+        Iterator<EventSerializerGsonTypeConverter<?>> convit = typeConverters.iterator();
         while (convit.hasNext()) {
-            EventSerializerGsonTypeConverter conv = convit.next();
+            EventSerializerGsonTypeConverter<?> conv = convit.next();
             log.log(Level.INFO, "Registering type converter for class {0}",
                     conv.convertedType().getCanonicalName());
             builder.registerTypeAdapter(conv.convertedType(), conv);
