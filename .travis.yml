@@ -1,7 +1,8 @@
 language: java
 jdk:
   - oraclejdk7
-  - openjdk7
+  - oraclejdk8
+#  - openjdk7	# disabled, causes a java buffer overflow in the travis-ci env
 env:
   matrix:
     - MAVEN_PROFILE=arq-glassfish-embedded TEST_DATABASE=derby
