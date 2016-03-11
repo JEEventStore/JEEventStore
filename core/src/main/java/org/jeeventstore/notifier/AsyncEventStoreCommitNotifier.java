@@ -122,8 +122,6 @@ public class AsyncEventStoreCommitNotifier
             // If the timer was canceled, this is no problem (on busy loads, it
             // might happen that the timer is reschudeled shortly after it was
             // canceled; in either case, canceled means the listeners have been notified.
-        } catch (IllegalStateException | EJBException e) {
-            log.severe("Error performing notification (" + e.getClass() + "): " + e.getMessage());
         }
     }
     
