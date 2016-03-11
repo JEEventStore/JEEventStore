@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
+import javax.ejb.EJBException;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.TimedObject;
@@ -116,11 +117,13 @@ public class AsyncEventStoreCommitNotifier
             // if we reach this line, no exception was thrown, i.e., the
             // notification was successful and the timer can be cancelled
             timer.cancel();
-        } catch (Exception e) {
-            log.info("Error performing notification: " + e.getMessage());
-            // if the timer was canceled, this is no problem (on busy loads, it
+        } catch (javax.ejb.NoSuchObjectLocalException e) {
+            // "timer has expired or has been cancelled"
+            // If the timer was canceled, this is no problem (on busy loads, it
             // might happen that the timer is reschudeled shortly after it was
             // canceled; in either case, canceled means the listeners have been notified.
+        } catch (IllegalStateException | EJBException e) {
+            log.severe("Error performing notification (" + e.getClass() + "): " + e.getMessage());
         }
     }
     
