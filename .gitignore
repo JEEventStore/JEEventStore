@@ -16,3 +16,6 @@ nbactions.xml
 /persistence-jpa-ejb/target/
 /serial-gson/target/
 /serial-gson-ejb/target/
+
+*.iml
+.idea/
