@@ -305,6 +305,7 @@
                                     </goals>
                                     <configuration>
                                         <keyname>C77774C8</keyname>
+                                        <useAgent>true</useAgent>
                                     </configuration>
                                 </execution>
                             </executions>
