@@ -71,6 +71,7 @@ public interface EventStorePersistence {
      * @param streamId  the identifier of the stream that is to be retrieved from, not null
      * @param minVersion  the minimum version (exclusive) of the {@link ChangeSet} to fetch
      * @param maxVersion  the maximum version (inclusive) of the {@link ChangeSet} to fetch
+     * @throws StreamNotFoundException if the given stream cannot be found
      * @return  the iterator to the {@link ChangeSet}s
      */
     Iterator<ChangeSet> getFrom(

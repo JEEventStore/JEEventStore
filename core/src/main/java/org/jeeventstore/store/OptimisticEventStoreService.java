@@ -21,13 +21,9 @@
 
 package org.jeeventstore.store;
 
-import org.jeeventstore.EventStore;
+import org.jeeventstore.*;
+
 import javax.ejb.EJB;
-import org.jeeventstore.EventStoreCommitNotifier;
-import org.jeeventstore.EventStorePersistence;
-import org.jeeventstore.ReadableEventStream;
-import org.jeeventstore.StreamNotFoundException;
-import org.jeeventstore.WritableEventStream;
 
 /**
  * The EventStoreService orchestrates the creation of event streams.

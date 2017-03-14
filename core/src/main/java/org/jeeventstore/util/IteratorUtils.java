@@ -36,6 +36,7 @@ public class IteratorUtils {
      * As the wrapped Iterator is traversed, an {@link ArrayList} of its values
      * is created. At the end, the list is returned.
 
+     * @param <T> the event type
      * @param it  the iterator to be traversed
      * @return   the list of values found in the traversal of the iterator
      */

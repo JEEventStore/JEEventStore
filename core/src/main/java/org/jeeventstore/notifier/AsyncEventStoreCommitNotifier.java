@@ -21,24 +21,14 @@
 
 package org.jeeventstore.notifier;
 
-import org.jeeventstore.EventStoreCommitNotifier;
-import java.io.Serializable;
-import java.util.logging.Logger;
-import javax.annotation.Resource;
-import javax.ejb.ConcurrencyManagement;
-import javax.ejb.ConcurrencyManagementType;
-import javax.ejb.EJBException;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.TimedObject;
-import javax.ejb.Timeout;
-import javax.ejb.Timer;
-import javax.ejb.TimerConfig;
-import javax.ejb.TimerService;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import org.jeeventstore.ChangeSet;
 import org.jeeventstore.EventStoreCommitListener;
+import org.jeeventstore.EventStoreCommitNotifier;
+
+import javax.annotation.Resource;
+import javax.ejb.*;
+import java.io.Serializable;
+import java.util.logging.Logger;
 
 /**
  * An asynchronous event store commit notifier.
@@ -105,7 +95,7 @@ public class AsyncEventStoreCommitNotifier
      * Handle the EJB TimerService timeout and notify any registered append
      * listeners. The timer will only fire if the transaction in which the timer
      * was created was committed successfully.
-     * @param timer 
+     * @param timer the timer information
      */
     @Timeout
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

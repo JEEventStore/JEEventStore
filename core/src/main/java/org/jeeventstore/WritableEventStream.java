@@ -41,7 +41,7 @@ public interface WritableEventStream extends VersionedEventStream {
      * 
      * @param commitId  the value that uniquely identifies the commit, null returns empty-handed
      * @throws DuplicateCommitException  if a commit with the same id already exists in the bucket
-     * @throws ConcurrencyException  if a {@ChangeSet} with the same streamVersion already exists
+     * @throws ConcurrencyException  if a {@link ChangeSet} with the same streamVersion already exists
      *   in the durable storage.
      */
     void commit(String commitId) 
