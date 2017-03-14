@@ -303,6 +303,9 @@
                                     <goals>
                                         <goal>sign</goal>
                                     </goals>
+                                    <configuration>
+                                        <keyname>C77774C8</keyname>
+                                    </configuration>
                                 </execution>
                             </executions>
                         </plugin>
