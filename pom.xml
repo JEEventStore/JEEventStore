@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.jeeventstore</groupId>
@@ -9,6 +10,28 @@
     <packaging>pom</packaging>
 
     <name>JEEventStore: Parent Module</name>
+
+    <description>JEEventStore is an event store using Java EE technology stack.</description>
+    <url>https://github.com/JEEventStore/JEEventStore</url>
+    <licenses>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>https://github.com/JEEventStore/JEEventStore/blob/master/LICENSE</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Alexander Langer</name>
+            <email>alexander.langer@redrainbow.de</email>
+            <organization>Red Rainbow IT Solutions GmbH</organization>
+            <organizationUrl>http://www.redrainbow.de</organizationUrl>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:git://github.com/JEEventStore/JEEventStore.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/JEEventStore/JEEventStore.git</developerConnection>
+        <url>http://github.com/JEEventStore/JEEventStore/tree/master</url>
+    </scm>
 
     <modules>
         <module>testutils</module>
@@ -20,7 +43,6 @@
         <module>serial-gson-ejb</module>
         <module>persistence-jpa</module>
         <module>persistence-jpa-ejb</module>
-        <!--module>persistence-memory</module-->
     </modules>
 
     <properties>
@@ -60,7 +82,7 @@
             <artifactId>arquillian-testng-container</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jboss.arquillian.protocol</groupId>
             <artifactId>arquillian-protocol-servlet</artifactId>
@@ -91,22 +113,22 @@
             </dependency>
 
             <!-- Java EE 6.0 API.  Here's why we are not using javaee-api:
-            https://community.jboss.org/wiki/WhatsTheCauseOfThisExceptionJavalangClassFormatErrorAbsentCode --> 
+            https://community.jboss.org/wiki/WhatsTheCauseOfThisExceptionJavalangClassFormatErrorAbsentCode -->
             <dependency>
                 <groupId>org.jboss.spec</groupId>
                 <artifactId>jboss-javaee-6.0</artifactId>
                 <version>1.0.0.Final</version>
-                <type>pom</type>  
+                <type>pom</type>
                 <scope>provided</scope>
             </dependency>
 
-            <dependency> 
-                <groupId>javax.enterprise</groupId> 
+            <dependency>
+                <groupId>javax.enterprise</groupId>
                 <artifactId>cdi-api</artifactId>
                 <version>1.0-SP4</version>
                 <scope>provided</scope>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
@@ -161,6 +183,19 @@
                     <ejbVersion>3.1</ejbVersion>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>true</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
+
         </plugins>
 
         <pluginManagement>
@@ -180,7 +215,7 @@
                     <version>2.16</version>
                     <configuration>
                         <!-- required due to a bug in glassfish-embedded: "Already bootstrapped"-->
-                        <!-- https://github.com/arquillian/arquillian-container-glassfish/issues/24 --> 
+                        <!-- https://github.com/arquillian/arquillian-container-glassfish/issues/24 -->
                         <reuseForks>false</reuseForks>
                     </configuration>
                 </plugin>
@@ -205,12 +240,75 @@
             </properties>
             <dependencies>
                 <dependency>
-                    <groupId>javax</groupId>   
-                    <artifactId>javaee-api</artifactId>   
-                    <version>6.0</version> 
+                    <groupId>javax</groupId>
+                    <artifactId>javaee-api</artifactId>
+                    <version>6.0</version>
                     <scope>provided</scope>
                 </dependency>
             </dependencies>
+        </profile>
+
+        <profile>
+            <id>release</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.sonatype.plugins</groupId>
+                            <artifactId>nexus-staging-maven-plugin</artifactId>
+                            <version>1.6.8</version>
+                            <extensions>true</extensions>
+                            <configuration>
+                                <serverId>ossrh</serverId>
+                                <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                                <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            </configuration>
+                        </plugin>
+
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-source-plugin</artifactId>
+                            <version>2.4</version>
+                            <executions>
+                                <execution>
+                                    <id>attach-sources</id>
+                                    <goals>
+                                        <goal>jar-no-fork</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <version>2.10.4</version>
+                            <executions>
+                                <execution>
+                                    <id>attach-javadocs</id>
+                                    <goals>
+                                        <goal>jar</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-gpg-plugin</artifactId>
+                            <version>1.6</version>
+                            <executions>
+                                <execution>
+                                    <id>sign-artifacts</id>
+                                    <phase>verify</phase>
+                                    <goals>
+                                        <goal>sign</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
         </profile>
 
         <profile>
@@ -255,7 +353,7 @@
             <!-- Run with: mvn clean test -Parq-glassfish-embedded -->
             <id>arq-glassfish-embedded</id>
             <dependencies>
-                
+
                 <dependency>
                     <groupId>org.glassfish.main.extras</groupId>
                     <artifactId>glassfish-embedded-all</artifactId>
@@ -279,7 +377,7 @@
                     <groupId>mysql</groupId>
                     <artifactId>mysql-connector-java</artifactId>
                     <version>5.1.26</version>
-                </dependency> 
+                </dependency>
 
                 <dependency>
                     <groupId>postgresql</groupId>
@@ -306,7 +404,6 @@
                 </plugins>
             </build>
         </profile>
-
 
 
         <profile>
@@ -357,5 +454,16 @@
         </profile>
 
     </profiles>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
 </project>
