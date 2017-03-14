@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.jeeventstore</groupId>
@@ -30,8 +31,8 @@
         <connection>scm:git:git://github.com/JEEventStore/JEEventStore.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/JEEventStore/JEEventStore.git</developerConnection>
         <url>http://github.com/JEEventStore/JEEventStore/tree/master</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <modules>
         <module>testutils</module>
@@ -110,16 +111,6 @@
                 <groupId>org.jeeventstore</groupId>
                 <artifactId>jeeventstore-persistence-jpa</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-
-            <!-- Java EE 6.0 API.  Here's why we are not using javaee-api:
-            https://community.jboss.org/wiki/WhatsTheCauseOfThisExceptionJavalangClassFormatErrorAbsentCode -->
-            <dependency>
-                <groupId>org.jboss.spec</groupId>
-                <artifactId>jboss-javaee-6.0</artifactId>
-                <version>1.0.0.Final</version>
-                <type>pom</type>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
@@ -250,6 +241,13 @@
 
         <profile>
             <id>release</id>
+            <dependencies>
+                <dependency>
+                    <groupId>javax</groupId>
+                    <artifactId>javaee-api</artifactId>
+                    <version>6.0</version>
+                </dependency>
+            </dependencies>
             <build>
                 <pluginManagement>
                     <plugins>
@@ -325,6 +323,7 @@
                     <artifactId>jboss-javaee-6.0</artifactId>
                     <type>pom</type>
                 </dependency>
+
                 <dependency>
                     <groupId>org.jboss.as</groupId>
                     <artifactId>jboss-as-arquillian-container-remote</artifactId>
@@ -386,6 +385,16 @@
                     <groupId>postgresql</groupId>
                     <artifactId>postgresql</artifactId>
                     <version>9.1-901-1.jdbc4</version>
+                </dependency>
+
+                <!-- Java EE 6.0 API.  Here's why we are not using javaee-api:
+                https://community.jboss.org/wiki/WhatsTheCauseOfThisExceptionJavalangClassFormatErrorAbsentCode -->
+                <dependency>
+                    <groupId>org.jboss.spec</groupId>
+                    <artifactId>jboss-javaee-6.0</artifactId>
+                    <version>1.0.0.Final</version>
+                    <type>pom</type>
+                    <scope>provided</scope>
                 </dependency>
 
             </dependencies>
