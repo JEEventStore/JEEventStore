@@ -4,7 +4,7 @@
 
     <groupId>org.jeeventstore</groupId>
     <artifactId>jeeventstore-parent</artifactId>
-    <version>1.1.8-SNAPSHOT</version>
+    <version>1.1.8</version>
 
     <packaging>pom</packaging>
 
@@ -34,6 +34,7 @@
     </scm>
 
     <modules>
+        <module>bom-all</module>
         <module>testutils</module>
         <module>testhelpers</module>
         <module>core</module>
@@ -93,24 +94,6 @@
 
     <dependencyManagement>
         <dependencies>
-
-            <dependency>
-                <groupId>org.jeeventstore</groupId>
-                <artifactId>jeeventstore-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jeeventstore</groupId>
-                <artifactId>jeeventstore-serialization-gson</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jeeventstore</groupId>
-                <artifactId>jeeventstore-persistence-jpa</artifactId>
-                <version>${project.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>javax.enterprise</groupId>

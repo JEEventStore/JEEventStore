@@ -15,11 +15,12 @@
 
     <name>JEEventStore: Persistence Memory</name>
 
-    <dependencies> 
+    <dependencies>
 
         <dependency>
             <groupId>org.jeeventstore</groupId>
             <artifactId>jeeventstore-core</artifactId>
+            <version>${project.version</version>
         </dependency>
 
         <dependency>

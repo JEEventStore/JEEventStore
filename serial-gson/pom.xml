@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jeeventstore</groupId>
         <artifactId>jeeventstore-parent</artifactId>
-        <version>1.1.8-SNAPSHOT</version>
+        <version>1.1.8</version>
     </parent>
 
     <artifactId>jeeventstore-serialization-gson</artifactId>
@@ -17,11 +17,12 @@
         <version.gson>2.2.4</version.gson>
     </properties>
 
-    <dependencies> 
+    <dependencies>
 
         <dependency>
             <groupId>org.jeeventstore</groupId>
             <artifactId>jeeventstore-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
         
         <dependency>

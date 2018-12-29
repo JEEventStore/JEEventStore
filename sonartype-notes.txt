@@ -1,16 +1,8 @@
-
-Automatic steps:
-
-mvn release:clean release:prepare
-    by answering the prompts for versions and tags, followed by
-mvn release:perform
-
-
-Manual steps:
-
 Publish a snapshot:
     mvn -Prelease clean deploy
 
 Publish a release:
     mvn versions:set -DnewVersion=1.2.3
     git tag v1.2.3
+    mvn clean deploy -P release
+    
