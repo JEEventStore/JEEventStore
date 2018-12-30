@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.jeeventstore</groupId>
         <artifactId>jeeventstore-parent</artifactId>
-        <version>1.1.8</version>
+        <version>1.1.9</version>
     </parent>
 
     <artifactId>jeeventstore-bom-all</artifactId>
@@ -40,6 +40,34 @@
                 <groupId>org.jeeventstore</groupId>
                 <artifactId>jeeventstore-persistence-memory</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jeeventstore</groupId>
+                <artifactId>jeeventstore-serialization-gson-ejb</artifactId>
+                <version>${project.version}</version>
+                <type>ejb</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jeeventstore</groupId>
+                <artifactId>jeeventstore-persistence-jpa-ejb</artifactId>
+                <version>${project.version}</version>
+                <type>ejb</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jeeventstore</groupId>
+                <artifactId>jeeventstore-core-sync-ejb</artifactId>
+                <version>${project.version}</version>
+                <type>ejb</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jeeventstore</groupId>
+                <artifactId>jeeventstore-core-async-ejb</artifactId>
+                <version>${project.version}</version>
+                <type>ejb</type>
             </dependency>
 
         </dependencies>
