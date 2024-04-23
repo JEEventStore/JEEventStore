@@ -1,3 +1,9 @@
+# Note
+
+A decade later I have learned quite a lot implementing event sourced systems, and I would implement a few things a bit differently nowadays.  In particular, I would recommend use a separate table for event streams and an `N:M` mapping between events and stream, such that each event can be part of multiple streams.  This is not a must, though, as I have successfully implemented several systems that are in production right now that use a similar table layout as this solution. 
+
+I'm no longer developing this event store and therefore merely keep it as a reference implementation for other people to learn about event sourcing and investigate. 
+
 JEEventStore
 ============
 
